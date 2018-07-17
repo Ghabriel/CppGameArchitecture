@@ -43,6 +43,8 @@ namespace engine::entitysystem {
         void removeComponent(Entity);
         template<typename T>
         bool hasComponent(Entity) const;
+        template<typename T, typename... Ts>
+        bool hasAllComponents(Entity) const;
 
         template<typename T>
         T& getData(Entity);
@@ -57,9 +59,6 @@ namespace engine::entitysystem {
 
         template<typename T, typename... Ts>
         void cleanupHelper(DeletedData&);
-
-        template<typename T, typename... Ts>
-        bool hasAllComponents(Entity) const;
     };
 
     inline Entity ComponentManager::createEntity() {
@@ -93,6 +92,17 @@ namespace engine::entitysystem {
     template<typename T>
     inline bool ComponentManager::hasComponent(Entity entity) const {
         return entityData<T>().count(entity);
+    }
+
+    template<typename T, typename... Ts>
+    bool ComponentManager::hasAllComponents(Entity entity) const {
+        bool hasT = hasComponent<T>(entity);
+
+        if constexpr (sizeof...(Ts) > 0) {
+            return hasT && hasAllComponents<Ts...>(entity);
+        } else {
+            return hasT;
+        }
     }
 
     template<typename T>
@@ -144,17 +154,6 @@ namespace engine::entitysystem {
 
         if constexpr (sizeof...(Ts) > 0) {
             cleanupHelper<Ts...>(deletedData);
-        }
-    }
-
-    template<typename T, typename... Ts>
-    bool ComponentManager::hasAllComponents(Entity entity) const {
-        bool hasT = hasComponent<T>(entity);
-
-        if constexpr (sizeof...(Ts) > 0) {
-            return hasT && hasAllComponents<Ts...>(entity);
-        } else {
-            return hasT;
         }
     }
 }
