@@ -5,13 +5,13 @@ using test::it;
 using test::before;
 
 void testEntitySystem() {
-	describe("entity system", []() {
-		it("placeholder test", []() {
-			expect(true).toBe(true);
-		});
-	});
+    describe("entity system", []() {
+        it("placeholder test", []() {
+            expect(true).toBe(true);
+        });
+    });
 }
 
 int main(int, char**) {
-	testEntitySystem();
+    testEntitySystem();
 }
