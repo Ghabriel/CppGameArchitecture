@@ -37,6 +37,9 @@ namespace engine::entitysystem {
         template<typename T, typename... Ts>
         void cleanup();
 
+        template<typename T, typename... Ts>
+        void clearAll();
+
         template<typename T>
         void addComponent(Entity);
         template<typename T>
@@ -77,6 +80,15 @@ namespace engine::entitysystem {
         cleanupHelper<T, Ts...>(deletedData);
         deletedData.clear();
         numDeletedEntities = 0;
+    }
+
+    template <typename T, typename... Ts>
+    void ComponentManager::clearAll() {
+        entityData<T>().clear();
+
+        if constexpr (sizeof...(Ts) > 0) {
+            clearAll<Ts...>();
+        }
     }
 
     template<typename T>
