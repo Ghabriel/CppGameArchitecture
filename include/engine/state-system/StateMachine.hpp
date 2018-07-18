@@ -14,6 +14,7 @@ namespace engine::statesystem {
      public:
         StateMachine();
 
+        void clear();
         void registerState(const std::string& name, std::unique_ptr<State>);
         void pushState(const std::string& stateName);
         void popState();
@@ -27,6 +28,21 @@ namespace engine::statesystem {
     StateMachine::StateMachine() {
         registeredStates.insert({"", std::make_unique<NullState>()});
         states.push(registeredStates.at("").get());
+    }
+
+    void StateMachine::clear() {
+        while (states.size() > 1) {
+            states.pop();
+        }
+
+        auto it = registeredStates.begin();
+        while (it != registeredStates.end()) {
+            if (it->first != "") {
+                it = registeredStates.erase(it);
+            } else {
+                ++it;
+            }
+        }
     }
 
     void StateMachine::registerState(
