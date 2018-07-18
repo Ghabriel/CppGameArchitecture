@@ -46,15 +46,11 @@ void testEntitySystem() {
         it("correctly stores component data", [&]() {
             Entity e1 = manager.createEntity();
             manager.addComponent<Component1>(e1);
-            Component1& data1 = manager.getData<Component1>(e1);
-            data1.field1 = 1;
-            data1.field2 = "abc";
+            manager.getData<Component1>(e1) = {1, "abc"};
 
             Entity e2 = manager.createEntity();
             manager.addComponent<Component1>(e2);
-            Component1& data2 = manager.getData<Component1>(e2);
-            data2.field1 = 2;
-            data2.field2 = "def";
+            manager.getData<Component1>(e2) = {2, "def"};
 
             manager.forEachEntity<Component1>([e1](Entity entity, Component1& data) {
                 if (entity == e1) {
@@ -141,6 +137,7 @@ void testEntitySystem() {
             expect(countComponents<Component1>(manager, e1)).toBe(1);
             manager.cleanup<Component1>();
             expect(countComponents<Component1>(manager, e1)).toBe(0);
+            expect(countComponents<Component1>(manager, e2)).toBe(1);
         });
     });
 }
