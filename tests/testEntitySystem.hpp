@@ -1,5 +1,5 @@
-#include "engine/entity-system/core.hpp"
-#include "engine/testing/core.hpp"
+#include "engine/entity-system/include.hpp"
+#include "engine/testing/include.hpp"
 
 using test::before;
 using test::describe;

@@ -2,7 +2,7 @@
 #include <random>
 #include "../components/Health.hpp"
 #include "../components/Position.hpp"
-#include "../engine/core.hpp"
+#include "../engine/include.hpp"
 #include "../visitors/ComponentPrinterVisitor.hpp"
 
 using engine::entitysystem::ComponentManager;

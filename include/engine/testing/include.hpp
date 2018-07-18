@@ -1,5 +1,5 @@
-#ifndef TESTING_CORE_HPP
-#define TESTING_CORE_HPP
+#ifndef TESTING_INCLUDE_HPP
+#define TESTING_INCLUDE_HPP
 
 #include "Expectation.hpp"
 #include "testing-api.hpp"
