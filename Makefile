@@ -39,7 +39,7 @@ BINARIES  :=$(BINDIR)/execute_me
 # Compiler & linker flags
 CXXFLAGS :=-std=c++17 -Wall
 LDFLAGS  :=
-LDLIBS   :=
+LDLIBS   :=-lsfml-graphics -lsfml-window -lsfml-system -pthread
 INCLUDE  :=-I$(INCDIR)
 ### TESTS-RELATED VARIABLES
 # Files containing the main() function

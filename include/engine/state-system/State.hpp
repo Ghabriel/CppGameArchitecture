@@ -20,8 +20,8 @@ namespace engine::statesystem {
 
     private:
         virtual void executeImpl() = 0;
-        virtual void onEnterImpl() { };
-        virtual void onExitImpl() { };
+        virtual void onEnterImpl() { }
+        virtual void onExitImpl() { }
     };
 }
 
