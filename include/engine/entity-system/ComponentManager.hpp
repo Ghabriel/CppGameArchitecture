@@ -31,33 +31,72 @@ namespace engine::entitysystem {
         using DeletedData = __detail::DeletedData;
         template<typename TComponent>
         static constexpr auto entityData = __detail::entityData<TComponent>;
-      public:
+     public:
+        /** \brief Creates a new entity without any components. */
         Entity createEntity();
+        /**
+         * \brief Deletes an entity, making it invisible to forEachEntity().
+         * Note that the bindings between the entity and its components are NOT
+         * deleted by this method, i.e the memory consumption is not affected.
+         * The "actual cleanup" is performed by .cleanup().
+         */
         void deleteEntity(Entity);
+        /**
+         * \brief Removes the bindings between all deleted entities and their
+         * components, effectively removing them from the system. Note that
+         * deleted entities can be "brought back to life" by having components
+         * added to them as usual.
+         */
         template<typename T, typename... Ts>
         void cleanup();
 
+        /**
+         * \brief Removes the bindings between every entity and the input components.
+         */
         template<typename T, typename... Ts>
         void clearAll();
 
+        /**
+         * \brief Adds a default-initialized T component to an entity.
+         */
         template<typename T>
         void addComponent(Entity);
+        /**
+         * \brief Removes the T component from an entity.
+         */
         template<typename T>
         void removeComponent(Entity);
+        /**
+         * \brief Checks if an entity has a T component.
+         */
         template<typename T>
         bool hasComponent(Entity) const;
+        /**
+         * \brief Checks if an entity has all the input components.
+         */
         template<typename T, typename... Ts>
         bool hasAllComponents(Entity) const;
 
+        /**
+         * \brief Returns the T component data of an entity. Throws if
+         * the entity doesn't have the T component.
+         */
         template<typename T>
         T& getData(Entity);
 
+        /**
+         * \brief Iterates over all entities that have all the input components,
+         * executing a callback for each of them. The entity itself and its
+         * data for all the input components is passed to the callback.
+         * Note: the performance of this method increases if the least common
+         * components come first in the list, especially the first.
+         */
         template<typename T, typename... Ts>
         void forEachEntity(
             std::function<void(Entity, T&, std::add_lvalue_reference_t<Ts>...)> fn
         );
 
-    private:
+     private:
         size_t numDeletedEntities = 0;
 
         template<typename T, typename... Ts>
