@@ -16,6 +16,7 @@ namespace engine::utils {
             auto fps = gauge.measure();
             constexpr auto precision = std::numeric_limits<long double>::digits10 + 1;
             std::cout << std::setprecision(precision) << message << ": " << fps << '\n';
+            gauge.reset();
         }
     }
 }

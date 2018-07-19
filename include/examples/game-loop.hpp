@@ -1,6 +1,4 @@
-#include <iostream>
-#include <SFML/Graphics.hpp>
-#include "../engine/game-loop/include.hpp"
+#include "engine/game-loop/include.hpp"
 #include "../GameLogic.hpp"
 #include "../Renderer.hpp"
 

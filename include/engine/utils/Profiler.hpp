@@ -5,7 +5,7 @@
 
 namespace engine::utils {
     class Profiler {
-    public:
+     public:
         void start() {
             startTime = std::chrono::steady_clock::now();
         }
@@ -31,7 +31,7 @@ namespace engine::utils {
             return measure<std::chrono::microseconds>();
         }
 
-    private:
+     private:
         std::chrono::steady_clock::time_point startTime;
         std::chrono::steady_clock::time_point finishTime;
     };

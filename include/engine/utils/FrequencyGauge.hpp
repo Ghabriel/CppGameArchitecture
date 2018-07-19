@@ -10,6 +10,11 @@ namespace engine::utils {
      */
     class FrequencyGauge {
     public:
+        void reset() {
+            counter = 0;
+            clock.restart();
+        }
+
         void tick() {
             ++counter;
         }

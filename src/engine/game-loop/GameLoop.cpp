@@ -31,16 +31,14 @@ void GameLoop::join() {
 
 void GameLoop::spawnUpdateThread() {
     updateThread = std::thread([&]() {
-        auto nextTick = clock.getTickCount();
-        nextUpdate = nextTick;
+        nextUpdate = clock.getTickCount();
 
         while (running) {
             auto now = clock.getTickCount();
 
-            if (now >= nextTick) {
+            if (now >= nextUpdate) {
                 update(*this);
-                nextTick += updatePeriod;
-                nextUpdate = nextTick;
+                nextUpdate += updatePeriod;
             }
         }
     });
