@@ -3,19 +3,21 @@
 
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include "engine/entity-system/include.hpp"
 #include "engine/game-loop/include.hpp"
 #include "engine/utils/print-fps.hpp"
+#include "sfml-renderer-system.hpp"
 
 class Renderer {
+    using ComponentManager = engine::entitysystem::ComponentManager;
     using GameLoop = engine::gameloop::GameLoop;
- public:
-    Renderer() : windowPtr(new sf::RenderWindow(sf::VideoMode(800, 600), "Test")) {}
+  public:
+    Renderer(ComponentManager& manager)
+     : windowPtr(new sf::RenderWindow(sf::VideoMode(800, 600), "Test")),
+       componentManager(manager) { }
 
     void operator()(GameLoop& game, double interpolation) {
         engine::utils::printFPS<2>("FPS", 2000);
-
-        static sf::CircleShape shape(100.f);
-        shape.setFillColor(sf::Color::Green);
 
         sf::RenderWindow& window = *windowPtr;
 
@@ -34,13 +36,14 @@ class Renderer {
         }
 
         window.clear();
-        window.draw(shape);
+        render(window, componentManager);
         window.display();
     }
 
   private:
     std::shared_ptr<sf::RenderWindow> windowPtr;
     sf::View view;
+    ComponentManager& componentManager;
 };
 
 #endif
