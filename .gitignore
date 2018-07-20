@@ -1,4 +1,6 @@
-bin/
-build/
 .deps/
 .vscode/
+bin/
+build/
+html/
+latex/

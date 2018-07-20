@@ -8,7 +8,10 @@ int mainGameLoop(int, char**) {
     GameLogic logic(componentManager);
     Renderer renderer(componentManager);
 
-    engine::gameloop::GameLoop gameLoop(logic, std::move(renderer));
+    engine::gameloop::GameLoop gameLoop(
+        std::move(logic),
+        std::move(renderer)
+    );
     gameLoop.start();
     gameLoop.join();
 

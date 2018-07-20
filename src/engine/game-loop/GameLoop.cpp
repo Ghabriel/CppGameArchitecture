@@ -6,7 +6,7 @@ GameLoop::GameLoop(
     std::function<void(GameLoop&)> update,
     std::function<void(GameLoop&, double)> render
 ) : update(update), render(render) {
-    setUpdateFrequency(25);
+    setUpdateFrequency(defaultUpdateFrequency);
 }
 
 void GameLoop::setUpdateFrequency(int ticksPerSecond) {
