@@ -26,6 +26,14 @@ namespace engine::entitysystem {
         }
     }
 
+    /**
+     * \brief Manages the game entities and their components.
+     *
+     * In the Component-Entity-System architecture, entities are simple GUIDs.
+     * Components by themselves have no logic and can be bound to entities to
+     * add data to them. All the game logic is implemented by systems, which
+     * operate on the data bound to the entities.
+     */
     class ComponentManager {
         using Deleted = __detail::Deleted;
         using DeletedData = __detail::DeletedData;
@@ -38,7 +46,7 @@ namespace engine::entitysystem {
          * \brief Deletes an entity, making it invisible to forEachEntity().
          * Note that the bindings between the entity and its components are NOT
          * deleted by this method, i.e the memory consumption is not affected.
-         * The "actual cleanup" is performed by .cleanup().
+         * The "actual cleanup" is performed by cleanup().
          */
         void deleteEntity(Entity);
         /**

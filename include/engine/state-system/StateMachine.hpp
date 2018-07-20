@@ -10,14 +10,37 @@
 #include "State.hpp"
 
 namespace engine::statesystem {
+    /**
+     * \brief Simplifies the application of the State pattern in games.
+     */
     class StateMachine {
      public:
         StateMachine();
 
+        /**
+         * \brief Clears the state stack and all registered states. This
+         * instance becomes effectively the same as when it was constructed.
+         */
         void clear();
+        /**
+         * \brief Registers a state, mapping it to a given name. Note that
+         * this state machine takes ownership of the state.
+         */
         void registerState(const std::string& name, std::unique_ptr<State>);
+        /**
+         * \brief Pushes a state, given its name. Throws if it's not
+         * a registered name.
+        */
         void pushState(const std::string& stateName);
+        /**
+         * \brief Pops the current state, returning the state machine to its
+         * previous state. Does nothing if there's no current state.
+         */
         void popState();
+        /**
+         * \brief Calls execute() on the current state. Does nothing if
+         * there's no current state.
+         */
         void execute() const;
 
      private:
