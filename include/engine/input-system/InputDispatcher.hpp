@@ -16,7 +16,7 @@ namespace engine::inputsystem {
      public:
         using Observer = std::function<void(const EventIdentifier&)>;
 
-        InputDispatcher(InputTracker&);
+        explicit InputDispatcher(InputTracker&);
 
         /**
          * \brief Should be called at every update tick. Updates the
@@ -81,8 +81,9 @@ namespace engine::inputsystem {
             });
         }
 
-        for (const auto& observer : observers) {
-            for (const auto& eventIdentifier : triggeredEvents) {
+        for (const auto& eventIdentifier : triggeredEvents) {
+            std::cout << "[TRIGGER] " << eventIdentifier << std::endl;
+            for (const auto& observer : observers) {
                 observer(eventIdentifier);
             }
         }
@@ -100,6 +101,7 @@ namespace engine::inputsystem {
     }
 
     void InputDispatcher::enableContext(const std::string& contextName) {
+        std::cout << "[ENABLE CONTEXT] " << contextName << std::endl;
         activeContexts.insert(&registeredContexts.at(contextName));
     }
 

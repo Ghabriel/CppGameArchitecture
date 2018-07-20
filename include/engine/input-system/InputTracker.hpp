@@ -55,6 +55,9 @@ namespace engine::inputsystem {
     ) : rawInput(std::move(rawInput)), relevantKeys(relevantKeys) { }
 
     void InputTracker::tick() {
+        actions.clear();
+        states.clear();
+
         for (const auto& [keyboardKey, gameKey] : relevantKeys) {
             if (rawInput->isKeyPressed(keyboardKey)) {
                 if (currentlyPressed.count(keyboardKey)) {

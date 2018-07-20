@@ -1,15 +1,18 @@
+#include <SFML/Graphics.hpp>
+#include <X11/Xlib.h>
 #include "engine/entity-system/include.hpp"
 #include "engine/game-loop/include.hpp"
 #include "../GameLogic.hpp"
 #include "../Renderer.hpp"
 
 int mainGameLoop(int, char**) {
+    XInitThreads();
     engine::entitysystem::ComponentManager componentManager;
     GameLogic logic(componentManager);
     Renderer renderer(componentManager);
 
     engine::gameloop::GameLoop gameLoop(
-        std::move(logic),
+        logic,
         std::move(renderer)
     );
     gameLoop.start();

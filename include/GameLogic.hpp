@@ -26,6 +26,7 @@ class GameLogic {
     using ComponentManager = engine::entitysystem::ComponentManager;
     using Entity = engine::entitysystem::Entity;
     using GameLoop = engine::gameloop::GameLoop;
+    using InputContext = engine::inputsystem::InputContext;
     using InputDispatcher = engine::inputsystem::InputDispatcher;
     using InputTracker = engine::inputsystem::InputTracker;
  public:
@@ -38,10 +39,17 @@ class GameLogic {
         manager.getData<CircularTraits>(test) = {100, sf::Color::Blue};
         manager.addComponent<Position>(test);
         manager.getData<Position>(test) = {10, 20};
+
+        InputContext contextA;
+        contextA.actions = { {"A", "EventA"} };
+        contextA.states = { {"S", "EventB"} };
+        inputDispatcher.registerContext("ContextA", contextA);
+        inputDispatcher.enableContext("ContextA");
     }
 
     void operator()(GameLoop& game) {
         engine::utils::printFPS<1>("Update Rate", 50);
+        inputDispatcher.tick();
     }
 
  private:
