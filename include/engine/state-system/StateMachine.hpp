@@ -11,7 +11,7 @@
 
 namespace engine::statesystem {
     /**
-     * \brief Simplifies the application of the State pattern in games.
+     * \brief Simplifies the application of the %State pattern in games.
      */
     class StateMachine {
      public:

@@ -47,6 +47,7 @@ namespace engine::gameloop {
         void join();
 
      private:
+        static constexpr int defaultUpdateFrequency = 25;
         std::function<void(GameLoop&)> update;
         std::function<void(GameLoop&, double)> render;
         int updatePeriod;
