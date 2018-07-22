@@ -60,9 +60,9 @@ namespace engine::inputsystem {
 
         for (const auto& [keyboardKey, gameKey] : relevantKeys) {
             if (rawInput->isKeyPressed(keyboardKey)) {
-                if (currentlyPressed.count(keyboardKey)) {
-                    states.insert(gameKey);
-                } else {
+                states.insert(gameKey);
+
+                if (!currentlyPressed.count(keyboardKey)) {
                     actions.insert(gameKey);
                 }
 
