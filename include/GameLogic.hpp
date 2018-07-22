@@ -41,10 +41,19 @@ class GameLogic {
         manager.getData<Position>(test) = {10, 20};
 
         InputContext contextA;
-        contextA.actions = { {"A", "EventA"} };
-        contextA.states = { {"S", "EventB"} };
+        contextA.actions = { {"A", "(A) EventA"} };
+        contextA.states = { {"S", "(A) EventB"} };
+        contextA.priority = 5;
         inputDispatcher.registerContext("ContextA", contextA);
+
+        InputContext contextB;
+        contextB.actions = { {"A", "(B) EventA"} };
+        contextB.states = { {"D", "(B) EventB"} };
+        contextB.priority = 6;
+        inputDispatcher.registerContext("ContextB", contextB);
+
         inputDispatcher.enableContext("ContextA");
+        inputDispatcher.enableContext("ContextB");
     }
 
     void operator()(GameLoop& game) {

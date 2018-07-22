@@ -1,6 +1,7 @@
 #ifndef INPUT_SYSTEM_INPUT_DISPATCHER_HPP
 #define INPUT_SYSTEM_INPUT_DISPATCHER_HPP
 
+#include <set>
 #include <string>
 #include <unordered_set>
 #include "InputContext.hpp"
@@ -8,11 +9,23 @@
 #include "types.hpp"
 
 namespace engine::inputsystem {
+    namespace __detail {
+        struct InputContextPointerCompare {
+            constexpr bool operator()(
+                const InputContext* lhs,
+                const InputContext* rhs
+            ) const {
+                return lhs->priority > rhs->priority;
+            }
+        };
+    }
+
     /**
      * Manages the active input contexts and emits their callback
      * identifiers at the appropriate moments to input observers.
      */
     class InputDispatcher {
+        using InputContextPointerCompare = __detail::InputContextPointerCompare;
      public:
         using Observer = std::function<void(const EventIdentifier&)>;
 
@@ -52,8 +65,7 @@ namespace engine::inputsystem {
      private:
         InputTracker& inputTracker;
         std::vector<Observer> observers;
-        // TODO: order them by priority
-        std::unordered_set<const InputContext*> activeContexts;
+        std::set<const InputContext*, InputContextPointerCompare> activeContexts;
         std::unordered_map<std::string, const InputContext> registeredContexts;
     };
 
@@ -62,7 +74,7 @@ namespace engine::inputsystem {
     void InputDispatcher::tick() {
         inputTracker.tick();
 
-        std::vector<EventIdentifier> triggeredEvents;
+        std::unordered_map<GameKey, EventIdentifier> triggeredEvents;
 
         for (const InputContext* context : activeContexts) {
             const auto& actions = context->actions;
@@ -70,18 +82,18 @@ namespace engine::inputsystem {
 
             inputTracker.forEachActionKey([&](const GameKey& key) {
                 if (actions.count(key)) {
-                    triggeredEvents.push_back(actions.at(key));
+                    triggeredEvents.insert({key, actions.at(key)});
                 }
             });
 
             inputTracker.forEachStateKey([&](const GameKey& key) {
                 if (states.count(key)) {
-                    triggeredEvents.push_back(states.at(key));
+                    triggeredEvents.insert({key, states.at(key)});
                 }
             });
         }
 
-        for (const auto& eventIdentifier : triggeredEvents) {
+        for (const auto& [_, eventIdentifier] : triggeredEvents) {
             std::cout << "[TRIGGER] " << eventIdentifier << std::endl;
             for (const auto& observer : observers) {
                 observer(eventIdentifier);
@@ -101,7 +113,6 @@ namespace engine::inputsystem {
     }
 
     void InputDispatcher::enableContext(const std::string& contextName) {
-        std::cout << "[ENABLE CONTEXT] " << contextName << std::endl;
         activeContexts.insert(&registeredContexts.at(contextName));
     }
 

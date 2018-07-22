@@ -44,7 +44,7 @@ namespace engine::inputsystem {
      private:
         std::shared_ptr<RawInput> rawInput;
         std::unordered_map<KeyboardKey, GameKey> relevantKeys;
-        std::unordered_set<KeyboardKey> currentlyPressed;
+        std::unordered_set<KeyboardKey> currentlyPressedKeys;
         std::unordered_set<GameKey> actions;
         std::unordered_set<GameKey> states;
     };
@@ -62,13 +62,13 @@ namespace engine::inputsystem {
             if (rawInput->isKeyPressed(keyboardKey)) {
                 states.insert(gameKey);
 
-                if (!currentlyPressed.count(keyboardKey)) {
+                if (!currentlyPressedKeys.count(keyboardKey)) {
                     actions.insert(gameKey);
                 }
 
-                currentlyPressed.insert(keyboardKey);
+                currentlyPressedKeys.insert(keyboardKey);
             } else {
-                currentlyPressed.erase(keyboardKey);
+                currentlyPressedKeys.erase(keyboardKey);
             }
         }
     }

@@ -5,7 +5,7 @@
 #include "types.hpp"
 
 namespace engine::inputsystem {
-/**
+    /**
      * \brief Represents a group of mappings between contextualized keyboard
      * keys (game keys) and their callbacks.
      *
