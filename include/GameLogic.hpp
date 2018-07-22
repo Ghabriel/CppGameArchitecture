@@ -8,7 +8,7 @@
 #include "components/Position.hpp"
 #include "engine/entity-system/include.hpp"
 #include "engine/game-loop/include.hpp"
-#include "engine/input-system/InputDispatcher.hpp"
+#include "engine/input-system/include.hpp"
 #include "engine/utils/print-fps.hpp"
 #include "RawInputSFML.hpp"
 

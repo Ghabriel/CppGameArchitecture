@@ -2,6 +2,7 @@
 #define INPUT_SYSTEM_INPUT_TRACKER_HPP
 
 #include <functional>
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include "KeyboardKey.hpp"

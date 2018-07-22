@@ -21,7 +21,7 @@ namespace engine::inputsystem {
     }
 
     /**
-     * Manages the active input contexts and emits their callback
+     * \brief Manages the active input contexts and emits their callback
      * identifiers at the appropriate moments to input observers.
      */
     class InputDispatcher {
@@ -30,6 +30,13 @@ namespace engine::inputsystem {
         using Observer = std::function<void(const EventIdentifier&)>;
 
         explicit InputDispatcher(InputTracker&);
+
+        /**
+         * \brief Clears the active contexts, all registered contexts and all
+         * registered observers. This instance becomes effectively the same as
+         * when it was constructed.
+         */
+        void clear();
 
         /**
          * \brief Should be called at every update tick. Updates the
@@ -71,6 +78,12 @@ namespace engine::inputsystem {
 
     InputDispatcher::InputDispatcher(InputTracker &tracker) : inputTracker(tracker) {}
 
+    void InputDispatcher::clear() {
+        observers.clear();
+        activeContexts.clear();
+        registeredContexts.clear();
+    }
+
     void InputDispatcher::tick() {
         inputTracker.tick();
 
@@ -94,7 +107,6 @@ namespace engine::inputsystem {
         }
 
         for (const auto& [_, eventIdentifier] : triggeredEvents) {
-            std::cout << "[TRIGGER] " << eventIdentifier << std::endl;
             for (const auto& observer : observers) {
                 observer(eventIdentifier);
             }

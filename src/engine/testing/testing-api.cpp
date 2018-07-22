@@ -28,6 +28,7 @@ namespace {
 
 void test::describe(const Name& name, Function body) {
     currentSpec = name;
+    beforeCallbacks.clear();
     std::cout << "[" << name << "]" << std::endl;
     body();
 }
