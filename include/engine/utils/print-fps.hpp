@@ -2,6 +2,7 @@
 #define UTILS_PRINT_FPS_HPP
 
 #include <iomanip>
+#include <iostream>
 #include <limits>
 #include "FrequencyGauge.hpp"
 
