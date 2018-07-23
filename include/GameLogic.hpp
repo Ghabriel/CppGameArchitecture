@@ -10,21 +10,12 @@
 #include "engine/game-loop/include.hpp"
 #include "engine/input-system/include.hpp"
 #include "engine/utils/print-fps.hpp"
-#include "RawInputSFML.hpp"
-
-namespace __detail {
-    using namespace engine::inputsystem;
-
-    const std::unordered_map<KeyboardKey, GameKey> keyMapping = {
-        {KeyboardKey::A, "A"},
-        {KeyboardKey::S, "S"},
-        {KeyboardKey::D, "D"},
-    };
-}
+#include "load-input-dispatcher.hpp"
 
 class GameLogic {
     using ComponentManager = engine::entitysystem::ComponentManager;
     using Entity = engine::entitysystem::Entity;
+    using EventIdentifier = engine::inputsystem::EventIdentifier;
     using GameLoop = engine::gameloop::GameLoop;
     using InputContext = engine::inputsystem::InputContext;
     using InputDispatcher = engine::inputsystem::InputDispatcher;
@@ -32,7 +23,7 @@ class GameLogic {
  public:
     GameLogic(ComponentManager& manager)
      : componentManager(manager),
-       inputTracker(std::make_unique<RawInputSFML>(), __detail::keyMapping),
+       inputTracker(loadInputTracker("resources/controls.json")),
        inputDispatcher(inputTracker) {
         Entity test = manager.createEntity();
         manager.addComponent<CircularTraits>(test);
@@ -52,6 +43,9 @@ class GameLogic {
         contextB.priority = 6;
         inputDispatcher.registerContext("ContextB", contextB);
 
+        inputDispatcher.addObserver([](const EventIdentifier& event) {
+            std::cout << "[TRIGGER] " << event << std::endl;
+        });
         inputDispatcher.enableContext("ContextA");
         inputDispatcher.enableContext("ContextB");
     }
