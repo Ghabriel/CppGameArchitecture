@@ -11,7 +11,29 @@ class JsonValue;
 namespace __detail {
     using Array = std::vector<JsonValue>;
     using Map = std::unordered_map<std::string, JsonValue>;
+
+    template<typename T>
+    class JsonIteratorWrapper {
+     public:
+        using iterator = typename T::iterator;
+        using const_iterator = typename T::const_iterator;
+
+        JsonIteratorWrapper(const JsonValue&);
+
+        iterator begin();
+        const_iterator begin() const;
+        const_iterator cbegin() const;
+        iterator end();
+        const_iterator end() const;
+        const_iterator cend() const;
+
+     private:
+        const JsonValue& value;
+    };
 }
+
+using JsonArrayIterator = __detail::JsonIteratorWrapper<__detail::Array>;
+using JsonMapIterator = __detail::JsonIteratorWrapper<__detail::Map>;
 
 class JsonValue {
     using Array = __detail::Array;
@@ -25,6 +47,14 @@ class JsonValue {
 
     template<typename T>
     T& get() const;
+
+    JsonArrayIterator asIterableArray() const {
+        return *this;
+    }
+
+    JsonMapIterator asIterableMap() const {
+        return *this;
+    }
 
     // Array access
     JsonValue& operator[](int index);
@@ -86,6 +116,35 @@ JsonValue& JsonValue::at(int index) {
 
 const JsonValue& JsonValue::at(int index) const {
     return get<Array>().at(index);
+}
+
+namespace __detail {
+    template<typename T>
+    JsonIteratorWrapper<T>::JsonIteratorWrapper(const JsonValue& value) : value(value) { }
+
+    template<typename T>
+    typename JsonIteratorWrapper<T>::iterator
+    JsonIteratorWrapper<T>::begin() { return value.get<T>().begin(); }
+
+    template<typename T>
+    typename JsonIteratorWrapper<T>::const_iterator
+    JsonIteratorWrapper<T>::begin() const { return value.get<T>().cbegin(); }
+
+    template<typename T>
+    typename JsonIteratorWrapper<T>::const_iterator
+    JsonIteratorWrapper<T>::cbegin() const { return value.get<T>().begin(); }
+
+    template<typename T>
+    typename JsonIteratorWrapper<T>::iterator
+    JsonIteratorWrapper<T>::end() { return value.get<T>().end(); }
+
+    template<typename T>
+    typename JsonIteratorWrapper<T>::const_iterator
+    JsonIteratorWrapper<T>::end() const { return value.get<T>().cend(); }
+
+    template<typename T>
+    typename JsonIteratorWrapper<T>::const_iterator
+    JsonIteratorWrapper<T>::cend() const { return value.get<T>().end(); }
 }
 
 #endif

@@ -14,19 +14,12 @@ engine::inputsystem::InputTracker loadInputTracker(
     using namespace engine::inputsystem;
     std::ifstream controlsFile(controlsFileName);
 
-    // TODO: make this automatic
     auto keyMappingJson = parseJSON(controlsFile);
-    std::unordered_map<KeyboardKey, GameKey> keyMapping = {
-        {KeyboardKey::A, keyMappingJson["A"].get<std::string>()},
-        {KeyboardKey::S, keyMappingJson["S"].get<std::string>()},
-        {KeyboardKey::D, keyMappingJson["D"].get<std::string>()}
-    };
+    std::unordered_map<KeyboardKey, GameKey> keyMapping;
 
-    // std::unordered_map<KeyboardKey, GameKey> keyMapping;
-
-    // for (const auto& [keyboardKey, gameKey] : keyMappingString) {
-    //     keyMapping.insert({keyFromString(keyboardKey), gameKey});
-    // }
+    for (const auto& [keyboardKey, gameKey] : keyMappingJson.asIterableMap()) {
+        keyMapping.insert({keyFromString(keyboardKey), gameKey.get<std::string>()});
+    }
 
     return InputTracker(std::make_unique<RawInputSFML>(), keyMapping);
 }
