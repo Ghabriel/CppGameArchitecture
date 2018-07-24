@@ -123,7 +123,7 @@ namespace engine::entitysystem {
 
     template<typename T, typename... Ts>
     inline void ComponentManager::cleanup() {
-        DeletedData& deletedData = entityData<Deleted>();
+        DeletedData& deletedData = __detail::entityData<Deleted>();
         cleanupHelper<T, Ts...>(deletedData);
         deletedData.clear();
         numDeletedEntities = 0;
