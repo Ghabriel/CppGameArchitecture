@@ -5,6 +5,7 @@
 #include "components/CircularTraits.hpp"
 #include "components/Position.hpp"
 #include "engine/entity-system/include.hpp"
+#include "engine/resource-system/ResourceStorage.hpp"
 #include "engine/sfml/sprite-system/include.hpp"
 
 engine::entitysystem::Entity createCircle(engine::entitysystem::ComponentManager& manager) {
@@ -16,12 +17,13 @@ engine::entitysystem::Entity createCircle(engine::entitysystem::ComponentManager
     return entity;
 }
 
-engine::entitysystem::Entity createPlayer(engine::entitysystem::ComponentManager& manager) {
+engine::entitysystem::Entity createPlayer(
+    engine::resourcesystem::ResourceStorage& storage,
+    engine::entitysystem::ComponentManager& manager
+) {
     using namespace engine::spritesystem;
 
-    static sf::Texture texture;
-    assert(texture.loadFromFile("resources/sprite-test.png"));
-    sf::Sprite sprite(texture);
+    sf::Sprite sprite(storage.get<sf::Texture>("player-sprite"));
 
     auto entity = manager.createEntity();
     manager.addComponent<LoopingAnimationData>(entity);

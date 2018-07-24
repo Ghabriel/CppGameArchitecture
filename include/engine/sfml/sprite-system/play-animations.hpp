@@ -35,7 +35,7 @@ namespace engine::spritesystem {
             ) {
                 animationPlayer.setPlaybackData(playbackData);
                 animationPlayer.setAnimationData(animationData);
-                animationPlayer.tick(5);
+                animationPlayer.tick(2);
 
                 if (animationPlayer.isFinished()) {
                     manager.removeComponent<AnimationPlaybackData>(entity);

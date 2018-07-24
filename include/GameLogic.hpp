@@ -10,7 +10,9 @@
 #include "engine/utils/print-fps.hpp"
 #include "entity-factories.hpp"
 #include "load-input-tracker.hpp"
+#include "load-resources.hpp"
 #include "register-input-contexts.hpp"
+#include "engine/resource-system/ResourceStorage.hpp"
 
 class GameLogic {
     using ComponentManager = engine::entitysystem::ComponentManager;
@@ -20,12 +22,14 @@ class GameLogic {
     using InputContext = engine::inputsystem::InputContext;
     using InputDispatcher = engine::inputsystem::InputDispatcher;
     using InputTracker = engine::inputsystem::InputTracker;
+    using ResourceStorage = engine::resourcesystem::ResourceStorage;
  public:
     GameLogic(ComponentManager& manager)
      : componentManager(manager),
        inputTracker(loadInputTracker("resources/controls.json")),
        inputDispatcher(inputTracker) {
-        createPlayer(componentManager);
+        loadResources(resourceStorage);
+        createPlayer(resourceStorage, componentManager);
         registerInputContexts(inputDispatcher);
     }
 
@@ -41,6 +45,7 @@ class GameLogic {
     ComponentManager& componentManager;
     InputTracker inputTracker;
     InputDispatcher inputDispatcher;
+    ResourceStorage resourceStorage;
 };
 
 #endif
