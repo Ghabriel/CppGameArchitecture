@@ -3,12 +3,12 @@
 
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
-#include "components/CircularTraits.hpp"
-#include "components/Position.hpp"
 #include "engine/entity-system/include.hpp"
 #include "engine/game-loop/include.hpp"
 #include "engine/input-system/include.hpp"
+#include "engine/sfml/sprite-system/include.hpp"
 #include "engine/utils/print-fps.hpp"
+#include "entity-factories.hpp"
 #include "load-input-tracker.hpp"
 #include "register-input-contexts.hpp"
 
@@ -25,13 +25,12 @@ class GameLogic {
      : componentManager(manager),
        inputTracker(loadInputTracker("resources/controls.json")),
        inputDispatcher(inputTracker) {
-        Entity test = manager.createEntity();
-        manager.addComponent<CircularTraits>(test);
-        manager.getData<CircularTraits>(test) = {100, sf::Color::Blue};
-        manager.addComponent<Position>(test);
-        manager.getData<Position>(test) = {10, 20};
-
+        createCircle(componentManager);
         registerInputContexts(inputDispatcher);
+
+        using namespace engine::spritesystem;
+        AnimationData data;
+        AnimationPlayer player(data);
     }
 
     void operator()(GameLoop& game) {
