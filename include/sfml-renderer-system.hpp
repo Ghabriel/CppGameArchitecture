@@ -5,6 +5,7 @@
 #include "components/CircularTraits.hpp"
 #include "components/Position.hpp"
 #include "engine/entity-system/include.hpp"
+#include "engine/sfml/sprite-system/include.hpp"
 
 inline void render(
     sf::RenderWindow& window,
@@ -18,6 +19,18 @@ inline void render(
             shape.setPosition(position.x, position.y);
             shape.setFillColor(traits.fillColor);
             window.draw(shape);
+        }
+    );
+
+    using namespace engine::spritesystem;
+
+    manager.forEachEntity<LoopingAnimationData, AnimationPlaybackData>(
+        [&](
+            Entity entity,
+            LoopingAnimationData& animationData,
+            AnimationPlaybackData& playbackData
+        ) {
+            window.draw(animationData.sprite);
         }
     );
 }

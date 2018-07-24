@@ -25,17 +25,16 @@ class GameLogic {
      : componentManager(manager),
        inputTracker(loadInputTracker("resources/controls.json")),
        inputDispatcher(inputTracker) {
-        createCircle(componentManager);
+        createPlayer(componentManager);
         registerInputContexts(inputDispatcher);
-
-        using namespace engine::spritesystem;
-        AnimationData data;
-        AnimationPlayer player(data);
     }
 
     void operator()(GameLoop& game) {
         engine::utils::printFPS<1>("Update Rate", 50);
         inputDispatcher.tick();
+
+        using namespace engine::spritesystem;
+        playAnimations<LoopingAnimationData>(componentManager);
     }
 
  private:

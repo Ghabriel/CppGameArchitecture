@@ -1,2 +1,4 @@
 #include "AnimationData.hpp"
-#include "AnimationPlayer.hpp"
+#include "AnimationPlaybackData.hpp"
+#include "LoopingAnimationData.hpp"
+#include "play-animations.hpp"
