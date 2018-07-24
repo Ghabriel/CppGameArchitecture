@@ -2,6 +2,7 @@
 #define RESOURCE_STORAGE_HPP
 
 #include <string>
+#include <unordered_map>
 
 namespace engine::resourcesystem {
     namespace __detail {

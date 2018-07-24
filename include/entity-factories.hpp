@@ -23,19 +23,9 @@ engine::entitysystem::Entity createPlayer(
 ) {
     using namespace engine::spritesystem;
 
-    sf::Sprite sprite(storage.get<sf::Texture>("player-sprite"));
-
     auto entity = manager.createEntity();
     manager.addComponent<LoopingAnimationData>(entity);
-    manager.getData<LoopingAnimationData>(entity) = {
-        sprite,
-        {
-            {0, 0, 32, 48, 10},
-            {32, 0, 32, 48, 10},
-            {64, 0, 32, 48, 10},
-            {96, 0, 32, 48, 10},
-        }
-    };
+    manager.getData<LoopingAnimationData>(entity) = storage.get<LoopingAnimationData>("player-walking-south");
     manager.addComponent<AnimationPlaybackData>(entity);
     return entity;
 }

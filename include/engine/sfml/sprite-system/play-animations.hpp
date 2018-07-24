@@ -59,22 +59,22 @@ namespace engine::spritesystem {
     }
 
     template<>
-    void AnimationPlayer<AnimationData>::setPlaybackData(AnimationPlaybackData& data) {
+    inline void AnimationPlayer<AnimationData>::setPlaybackData(AnimationPlaybackData& data) {
         playbackData = &data;
     }
 
     template<>
-    void AnimationPlayer<AnimationData>::setAnimationData(const AnimationData& data) {
+    inline void AnimationPlayer<AnimationData>::setAnimationData(const AnimationData& data) {
         animationData = &data;
     }
 
     template<>
-    bool AnimationPlayer<AnimationData>::isFinished() const {
+    inline bool AnimationPlayer<AnimationData>::isFinished() const {
         return playbackData->currentFrameIndex >= animationData->frames.size();
     }
 
     template<>
-    void AnimationPlayer<AnimationData>::tick(double timeSinceLastFrame) {
+    inline void AnimationPlayer<AnimationData>::tick(double timeSinceLastFrame) {
         if (isFinished()) {
             return;
         }
@@ -90,7 +90,7 @@ namespace engine::spritesystem {
     }
 
     template<>
-    const Frame* AnimationPlayer<AnimationData>::getCurrentFrame() const {
+    inline const Frame* AnimationPlayer<AnimationData>::getCurrentFrame() const {
         if (isFinished()) {
             return nullptr;
         }
@@ -99,26 +99,26 @@ namespace engine::spritesystem {
     }
 
     template<>
-    void AnimationPlayer<LoopingAnimationData>::setPlaybackData(
+    inline void AnimationPlayer<LoopingAnimationData>::setPlaybackData(
         AnimationPlaybackData& data
     ) {
         playbackData = &data;
     }
 
     template<>
-    void AnimationPlayer<LoopingAnimationData>::setAnimationData(
+    inline void AnimationPlayer<LoopingAnimationData>::setAnimationData(
         const LoopingAnimationData& data
     ) {
         animationData = &data;
     }
 
     template<>
-    bool AnimationPlayer<LoopingAnimationData>::isFinished() const {
+    inline bool AnimationPlayer<LoopingAnimationData>::isFinished() const {
         return false;
     }
 
     template<>
-    void AnimationPlayer<LoopingAnimationData>::tick(double timeSinceLastFrame) {
+    inline void AnimationPlayer<LoopingAnimationData>::tick(double timeSinceLastFrame) {
         auto& currentFrameIndex = playbackData->currentFrameIndex;
         playbackData->currentFrameElapsedTime += timeSinceLastFrame;
         const Frame& currentFrame = animationData->frames.at(currentFrameIndex);
@@ -130,7 +130,7 @@ namespace engine::spritesystem {
     }
 
     template<>
-    const Frame* AnimationPlayer<LoopingAnimationData>::getCurrentFrame() const {
+    inline const Frame* AnimationPlayer<LoopingAnimationData>::getCurrentFrame() const {
         return &animationData->frames.at(playbackData->currentFrameIndex);
     }
 }
