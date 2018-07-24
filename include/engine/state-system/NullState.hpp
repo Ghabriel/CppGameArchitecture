@@ -4,6 +4,9 @@
 #include "State.hpp"
 
 namespace engine::statesystem {
+    /**
+     * \brief A simple State that does nothing when executed.
+     */
     class NullState : public State {
      private:
         void executeImpl() override { }

@@ -6,6 +6,9 @@
 #include "Frame.hpp"
 
 namespace engine::spritesystem {
+    /**
+     * \brief Represents an animation that loops indefinitely.
+     */
     struct LoopingAnimationData {
         sf::Sprite sprite;
         std::vector<Frame> frames;

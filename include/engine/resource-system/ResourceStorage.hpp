@@ -20,11 +20,22 @@ namespace engine::resourcesystem {
         }
     }
 
+    /**
+     * \brief Stores arbitrary resource data, which can be retrieved by
+     * their identifiers.
+     */
     class ResourceStorage {
     public:
+        /**
+         * \brief Stores data, assigning it a given identifier.
+         */
         template<typename T>
         void store(const std::string& identifier, const T& data);
 
+        /**
+         * \brief Retrieves previously stored data. Throws if the identifier
+         * is invalid.
+         */
         template<typename T>
         T& get(const std::string& identifier) const;
     };

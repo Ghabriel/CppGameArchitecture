@@ -9,6 +9,11 @@
 #include "LoopingAnimationData.hpp"
 
 namespace engine::spritesystem {
+    /**
+     * \brief Advances the animation state of an entity. Should be specialized
+     * for each animation data type other than AnimationData and
+     * LoopingAnimationData.
+     */
     template<typename TAnimationData>
     class AnimationPlayer {
      public:
