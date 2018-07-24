@@ -4,23 +4,33 @@
 #include <chrono>
 
 namespace engine::utils {
+    /**
+     * \brief Simple low-level interface to a clock.
+     */
     class Clock {
      public:
         using InternalClock = std::chrono::high_resolution_clock;
         using TimePoint = typename InternalClock::time_point;
 
-        // Returns the number of milliseconds elapsed since startTime.
+        /**
+         * \brief Returns the number of milliseconds elapsed since restart()
+         * or construction.
+         */
         intmax_t getTickCount() const {
             using namespace std::chrono;
             return duration_cast<milliseconds>(now() - startTime).count();
         }
 
-        // Returns the current time point, according to the internal clock.
+        /**
+         * \brief Returns the current time point, according to the internal clock.
+         */
         TimePoint now() const {
             return InternalClock::now();
         }
 
-        // Allows clock re-use.
+        /**
+         * \brief Resets the internal clock to point to the current time point.
+         */
         void restart() {
             startTime = now();
         }
