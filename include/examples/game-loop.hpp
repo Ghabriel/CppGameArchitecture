@@ -6,13 +6,14 @@
 #include "../Renderer.hpp"
 
 int mainGameLoop(int, char**) {
+    using engine::gameloop::GameLoop;
     XInitThreads();
     engine::entitysystem::ComponentManager componentManager;
     GameLogic logic(componentManager);
     Renderer renderer(componentManager);
 
-    engine::gameloop::GameLoop gameLoop(
-        logic,
+    GameLoop gameLoop(
+        [&](GameLoop& loop) { logic(loop); },
         std::move(renderer)
     );
     gameLoop.start();

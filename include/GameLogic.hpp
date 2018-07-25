@@ -30,17 +30,16 @@ class GameLogic {
     GameLogic(ComponentManager& manager)
      : componentManager(manager),
        inputTracker(loadInputTracker("resources/controls.json")),
-       inputDispatcher(inputTracker),
-       stateMachine(std::make_unique<StateMachine>()) {
+       inputDispatcher(inputTracker) {
         loadResources(resourceStorage);
         registerInputContexts(inputDispatcher);
-        registerStates(*stateMachine);
-        stateMachine->pushState("menu-state");
+        registerStates(stateMachine);
+        stateMachine.pushState("menu-state");
     }
 
     void operator()(GameLoop& game) {
         inputDispatcher.tick();
-        stateMachine->execute();
+        stateMachine.execute();
 
         // using namespace engine::spritesystem;
         // playAnimations<LoopingAnimationData>(componentManager);
@@ -51,7 +50,7 @@ class GameLogic {
     InputTracker inputTracker;
     InputDispatcher inputDispatcher;
     ResourceStorage resourceStorage;
-    std::shared_ptr<StateMachine> stateMachine;
+    StateMachine stateMachine;
 };
 
 #endif
