@@ -19,8 +19,19 @@ namespace engine::spritesystem {
      public:
         void setPlaybackData(AnimationPlaybackData&);
         void setAnimationData(const TAnimationData&);
+
+        /**
+         * \brief Checks if the underlying animation has finished
+         */
         bool isFinished() const;
+        /**
+         * \brief Advances the underlying animation state using the
+         * elapsed time since the last tick.
+         */
         void tick(double timeSinceLastFrame);
+        /**
+         * \brief Returns the current animation Frame.
+         */
         const Frame* getCurrentFrame() const;
 
      private:
@@ -40,6 +51,7 @@ namespace engine::spritesystem {
             ) {
                 animationPlayer.setPlaybackData(playbackData);
                 animationPlayer.setAnimationData(animationData);
+                // TODO: get the correct tick value
                 animationPlayer.tick(2);
 
                 if (animationPlayer.isFinished()) {
