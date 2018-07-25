@@ -48,12 +48,12 @@ namespace engine::statesystem {
         std::unordered_map<std::string, std::unique_ptr<State>> registeredStates;
     };
 
-    StateMachine::StateMachine() {
+    inline StateMachine::StateMachine() {
         registeredStates.insert({"", std::make_unique<NullState>()});
         states.push(registeredStates.at("").get());
     }
 
-    void StateMachine::clear() {
+    inline void StateMachine::clear() {
         while (states.size() > 1) {
             states.pop();
         }
@@ -68,20 +68,20 @@ namespace engine::statesystem {
         }
     }
 
-    void StateMachine::registerState(
+    inline void StateMachine::registerState(
         const std::string& name,
         std::unique_ptr<State> state
     ) {
         registeredStates.insert({name, std::move(state)});
     }
 
-    void StateMachine::pushState(const std::string& stateName) {
+    inline void StateMachine::pushState(const std::string& stateName) {
         states.top()->onExit();
         states.push(registeredStates.at(stateName).get());
         states.top()->onEnter();
     }
 
-    void StateMachine::popState() {
+    inline void StateMachine::popState() {
         if (states.size() > 1) {
             states.top()->onExit();
             states.pop();
@@ -89,7 +89,7 @@ namespace engine::statesystem {
         }
     }
 
-    void StateMachine::execute() const {
+    inline void StateMachine::execute() const {
         states.top()->execute();
     }
 }

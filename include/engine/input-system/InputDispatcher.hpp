@@ -76,15 +76,15 @@ namespace engine::inputsystem {
         std::unordered_map<std::string, const InputContext> registeredContexts;
     };
 
-    InputDispatcher::InputDispatcher(InputTracker &tracker) : inputTracker(tracker) {}
+    inline InputDispatcher::InputDispatcher(InputTracker& tracker) : inputTracker(tracker) {}
 
-    void InputDispatcher::clear() {
+    inline void InputDispatcher::clear() {
         observers.clear();
         activeContexts.clear();
         registeredContexts.clear();
     }
 
-    void InputDispatcher::tick() {
+    inline void InputDispatcher::tick() {
         inputTracker.tick();
 
         std::unordered_map<GameKey, EventIdentifier> triggeredEvents;
@@ -113,26 +113,26 @@ namespace engine::inputsystem {
         }
     }
 
-    void InputDispatcher::addObserver(Observer fn) {
+    inline void InputDispatcher::addObserver(Observer fn) {
         observers.push_back(fn);
     }
 
-    void InputDispatcher::registerContext(
+    inline void InputDispatcher::registerContext(
         const std::string& name,
         const InputContext& context
     ) {
         registeredContexts.insert({name, context});
     }
 
-    void InputDispatcher::enableContext(const std::string& contextName) {
+    inline void InputDispatcher::enableContext(const std::string& contextName) {
         activeContexts.insert(&registeredContexts.at(contextName));
     }
 
-    void InputDispatcher::disableContext(const std::string& contextName) {
+    inline void InputDispatcher::disableContext(const std::string& contextName) {
         activeContexts.erase(&registeredContexts.at(contextName));
     }
 
-    void InputDispatcher::disableAllContexts() {
+    inline void InputDispatcher::disableAllContexts() {
         activeContexts.clear();
     }
 }

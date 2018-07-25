@@ -50,12 +50,12 @@ namespace engine::inputsystem {
         std::unordered_set<GameKey> states;
     };
 
-    InputTracker::InputTracker(
+    inline InputTracker::InputTracker(
         std::shared_ptr<RawInput> rawInput,
         const std::unordered_map<KeyboardKey, GameKey>& relevantKeys
     ) : rawInput(std::move(rawInput)), relevantKeys(relevantKeys) { }
 
-    void InputTracker::tick() {
+    inline void InputTracker::tick() {
         actions.clear();
         states.clear();
 
@@ -74,13 +74,13 @@ namespace engine::inputsystem {
         }
     }
 
-    void InputTracker::forEachActionKey(std::function<void(const GameKey&)> fn) const {
+    inline void InputTracker::forEachActionKey(std::function<void(const GameKey&)> fn) const {
         for (const auto& gameKey : actions) {
             fn(gameKey);
         }
     }
 
-    void InputTracker::forEachStateKey(std::function<void(const GameKey&)> fn) const {
+    inline void InputTracker::forEachStateKey(std::function<void(const GameKey&)> fn) const {
         for (const auto& gameKey : states) {
             fn(gameKey);
         }
