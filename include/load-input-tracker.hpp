@@ -18,7 +18,10 @@ engine::inputsystem::InputTracker loadInputTracker(
     std::unordered_map<KeyboardKey, GameKey> keyMapping;
 
     for (const auto& [keyboardKey, gameKey] : keyMappingJson.asIterableMap()) {
-        keyMapping.insert({keyFromString(keyboardKey), gameKey.get<std::string>()});
+        keyMapping.insert({
+            keyFromString(keyboardKey),
+            gameKey.get<std::string>()
+        });
     }
 
     return InputTracker(std::make_unique<RawInputSFML>(), keyMapping);

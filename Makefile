@@ -22,6 +22,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 ############################## PROJECT VARIABLES ##############################
+MAKEFLAGS +=-rR
 ### SUPPORTED SUFFIXES
 HEADERSUFFIXES :=h hpp
 ### DIRECTORIES
@@ -37,6 +38,7 @@ MAINFILES :=$(SRCDIR)/main.cpp
 # Binaries corresponding to each file with a main() function
 BINARIES  :=$(BINDIR)/execute_me
 # Compiler & linker flags
+CXX      :=g++
 CXXFLAGS :=-std=c++17 -Wall
 LDFLAGS  :=
 LDLIBS   :=-lsfml-graphics -lsfml-window -lsfml-system -pthread -lX11
@@ -91,8 +93,8 @@ define makedeps
 	$(shell mkdir -p $(dir $1))
 	$(shell $(call makedep,"$(OBJDIR)/$3.o $1",$1,$2))
 	$(eval TARGET_OBJ:=$(patsubst %.cpp,$(OBJDIR)/%.o,$2))
-	$(eval $3_EDGES:=$(filter $(HEADERPATTERNS),$(shell cat $1)))
-	$(eval $3_EDGES:=$(patsubst $(INCDIR)/%,$(SRCDIR)/%,$($3_EDGES)))
+	$(eval $3_EDGES:=$(abspath $(filter $(HEADERPATTERNS),$(shell cat $1))))
+	$(eval $3_EDGES:=$(patsubst $(abspath $(INCDIR))%,$(SRCDIR)%,$($3_EDGES)))
 	$(eval $3_EDGES:=$(patsubst %,$(OBJDIR)/%.o,$(basename $($3_EDGES))))
 	$(eval $3_EDGES:=$(filter $($3_EDGES),$(OBJECTS)))
 	$(eval $3_EDGES:=$(filter-out $(TARGET_OBJ),$($3_EDGES)))
@@ -161,11 +163,11 @@ $(OBJDIR)/$(TSTDIR)/%.o: INCLUDE +=$(TINCLUDE)
 
 ################################ CLEAN RULES ##################################
 clean:
-	$(SILENT) $(RM) -r $(OBJDIR)
-	$(SILENT) $(RM) -r $(BINDIR)
+	$(SILENT) rm -r $(OBJDIR)
+	$(SILENT) rm -r $(BINDIR)
 
 distclean: clean
-	$(SILENT) $(RM) -r $(DEPDIR)
+	$(SILENT) rm -r $(DEPDIR)
 
 ################################ PREREQUISITES ################################
 # Do not include list of dependencies with clean rules
@@ -178,3 +180,4 @@ else
     -include $(TMAINDEPS)
   endif
 endif
+

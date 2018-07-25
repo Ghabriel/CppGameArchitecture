@@ -49,7 +49,7 @@ namespace dbg {
     template<typename T>
     inline void redirect(const T& stream) FN_SUFFIX;
 
-    namespace detail {
+    namespace __detail {
         using DebugBufferType = std::tuple<size_t, std::string, std::string>;
         inline DebugBufferType& debugBuffer() {
             static DebugBufferType buffer;
@@ -211,36 +211,36 @@ namespace dbg {
 
     template<typename... Args>
     inline void echo(Args&&... args) {
-        detail::DebugContainer<>::echo(std::forward<Args>(args)...);
+        __detail::DebugContainer<>::echo(std::forward<Args>(args)...);
     }
 
     template<typename... Args>
     inline void echoIndented(size_t numTabs, Args&&... args) {
-        detail::DebugContainer<>::echoIndented(numTabs, std::forward<Args>(args)...);
+        __detail::DebugContainer<>::echoIndented(numTabs, std::forward<Args>(args)...);
     }
 
     template<typename... Args>
     inline void trace(Args&&... args) {
-        detail::DebugContainer<>::trace(std::forward<Args>(args)...);
+        __detail::DebugContainer<>::trace(std::forward<Args>(args)...);
     }
 
     template<typename T>
     inline void traceIterable(const std::string& name, const T& value) {
-        detail::DebugContainer<>::traceIterable(name, value);
+        __detail::DebugContainer<>::traceIterable(name, value);
     }
 
     inline void debug(size_t line, const std::string& filename, const std::string& fn) {
-        detail::DebugContainer<>::debug(line, filename, fn);
+        __detail::DebugContainer<>::debug(line, filename, fn);
     }
 
     template<typename T>
     inline void redirect(T& stream) {
-        detail::DebugContainer<>::redirect(stream);
+        __detail::DebugContainer<>::redirect(stream);
     }
 
     template<typename T>
     inline void redirect(const T& stream) {
-        detail::DebugContainer<>::redirect(stream);
+        __detail::DebugContainer<>::redirect(stream);
     }
 }
 

@@ -15,7 +15,7 @@
 #if ALLOW_DEBUG_USAGE == 1
 
 namespace dbg {
-    namespace detail {
+    namespace __detail {
         template<int P> struct priority : public priority<P-1> {};
         template<> struct priority<0> {};
 
@@ -66,10 +66,10 @@ namespace dbg {
 
     class XTraceFormatter {
         template<int P>
-        using priority = detail::priority<P>;
+        using priority = __detail::priority<P>;
 
         template<typename Container>
-        using is_linear_container = detail::is_linear_container<Container>;
+        using is_linear_container = __detail::is_linear_container<Container>;
      public:
         static XTraceFormatter instance() {
             static XTraceFormatter inst;
@@ -267,7 +267,7 @@ namespace detail {
     const auto xTraceFormatter = dbg::XTraceFormatter::instance();
 }
 
-#define XTRACE(x) dbg::trace((#x), (x), detail::xTraceFormatter)
+#define XTRACE(x) dbg::trace((#x), (x), __detail::xTraceFormatter)
 
 #else
 
