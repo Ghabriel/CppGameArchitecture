@@ -1,6 +1,7 @@
 #include "load-resources.hpp"
 
 #include <cassert>
+#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
 #include "engine/sfml/sprite-system/include.hpp"
 
@@ -30,7 +31,14 @@ void loadAnimationData(ResourceStorage& storage) {
     storage.store("player-walking-south", playerWalkingSouth);
 }
 
+void loadBGM(ResourceStorage& storage) {
+    auto littleRoot = std::make_shared<sf::Music>();
+    assert(littleRoot->openFromFile("resources/littleroot-town.wav"));
+    storage.store("bgm-littleroot-town", std::move(littleRoot));
+}
+
 void loadResources(ResourceStorage& storage) {
     loadTextures(storage);
     loadAnimationData(storage);
+    loadBGM(storage);
 }

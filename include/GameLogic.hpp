@@ -11,6 +11,7 @@
 #include "engine/sfml/sprite-system/include.hpp"
 #include "engine/state-system/include.hpp"
 #include "entity-factories.hpp"
+#include "GameCoreData.hpp"
 #include "load-input-tracker.hpp"
 #include "load-resources.hpp"
 #include "register-input-contexts.hpp"
@@ -31,9 +32,17 @@ class GameLogic {
      : componentManager(manager),
        inputTracker(loadInputTracker("resources/controls.json")),
        inputDispatcher(inputTracker) {
+        gameData = {
+            &componentManager,
+            &inputTracker,
+            &inputDispatcher,
+            &resourceStorage,
+            &stateMachine
+        };
+
         loadResources(resourceStorage);
         registerInputContexts(inputDispatcher);
-        registerStates(stateMachine);
+        registerStates(gameData);
         stateMachine.pushState("menu-state");
     }
 
@@ -51,6 +60,7 @@ class GameLogic {
     InputDispatcher inputDispatcher;
     ResourceStorage resourceStorage;
     StateMachine stateMachine;
+    GameCoreData gameData;
 };
 
 #endif

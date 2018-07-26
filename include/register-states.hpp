@@ -1,8 +1,8 @@
 #ifndef REGISTER_STATES_HPP
 #define REGISTER_STATES_HPP
 
-#include "engine/state-system/forward-declarations.hpp"
+#include "GameCoreData.hpp"
 
-void registerStates(engine::statesystem::StateMachine&);
+void registerStates(GameCoreData&);
 
 #endif
