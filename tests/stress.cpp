@@ -4,12 +4,21 @@
 
 struct X {};
 
+/*
+ * No optimization flags:
+ *  10^6 entities: 56ms -> 29ms
+ *  10^7 entities: 502ms -> 297ms
+ *
+ * -O3:
+ *  10^7 entities: 30ms -> 27ms
+ *  10^8 entities: 304ms -> 285ms
+ */
 int main(int, char**) {
     using engine::entitysystem::Entity;
     engine::entitysystem::ComponentManager manager;
     engine::utils::Profiler profiler;
 
-    for (size_t i = 0; i < 1e6; i++) {
+    for (size_t i = 0; i < 1e7; i++) {
         Entity e = manager.createEntity();
         manager.addComponent<X>(e);
     }

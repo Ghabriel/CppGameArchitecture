@@ -99,15 +99,19 @@ namespace engine::entitysystem {
 
         /**
          * \brief Iterates over all entities that have all the input components,
-         * executing a callback for each of them. The entity itself and its
-         * data for all the input components is passed to the callback.
-         * Note: the performance of this method increases if the least common
+         * executing a callback for each of them.
+         *
+         * The entity itself and its data for all the input components is
+         * passed to the callback. `fn` must be compatible with the following
+         * signature:
+         *
+         * `std::function<void(Entity, T&, std::add_lvalue_reference_t<Ts>...)> fn`
+         *
+         * **Note**: the performance of this method increases if the least common
          * components come first in the list, especially the first.
          */
-        template<typename T, typename... Ts>
-        void forEachEntity(
-            std::function<void(Entity, T&, std::add_lvalue_reference_t<Ts>...)> fn
-        );
+        template<typename T, typename... Ts, typename Functor>
+        void forEachEntity(Functor fn);
 
      private:
         size_t numDeletedEntities = 0;
@@ -182,10 +186,8 @@ namespace engine::entitysystem {
         return entityData<T>().at(entity);
     }
 
-    template<typename T, typename... Ts>
-    inline void ComponentManager::forEachEntity(
-        std::function<void(Entity, T&, std::add_lvalue_reference_t<Ts>...)> fn
-    ) {
+    template<typename T, typename... Ts, typename Functor>
+    inline void ComponentManager::forEachEntity(Functor fn) {
         auto& allEntitiesData = entityData<T>();
 
         if constexpr (sizeof...(Ts) > 0) {
