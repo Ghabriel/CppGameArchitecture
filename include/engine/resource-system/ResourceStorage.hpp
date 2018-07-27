@@ -31,7 +31,7 @@ namespace engine::resourcesystem {
          * \brief Stores data, assigning it a given identifier.
          */
         template<typename T>
-        void store(const std::string& identifier, const T& data);
+        void store(const std::string& identifier, T&& data);
 
         /**
          * \brief Retrieves previously stored data. Throws if the identifier
@@ -42,8 +42,11 @@ namespace engine::resourcesystem {
     };
 
     template<typename T>
-    void ResourceStorage::store(const std::string& identifier, const T& data) {
-        __detail::resourceData<T>().insert({identifier, data});
+    void ResourceStorage::store(const std::string& identifier, T&& data) {
+        __detail::resourceData<std::decay_t<T>>().insert({
+            identifier,
+            std::forward<T>(data)
+        });
     }
 
     template<typename T>

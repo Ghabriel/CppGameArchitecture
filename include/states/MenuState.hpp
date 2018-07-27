@@ -1,9 +1,9 @@
 #ifndef MENU_STATE_HPP
 #define MENU_STATE_HPP
 
-#include <SFML/Audio.hpp>
 #include "../engine/entity-system/include.hpp"
 #include "../engine/resource-system/ResourceStorage.hpp"
+#include "../engine/sfml/sound-system/Music.hpp"
 #include "../engine/state-system/State.hpp"
 #include "../engine/utils/print-fps.hpp"
 #include "../engine/utils/xtrace.hpp"
@@ -11,6 +11,7 @@
 
 class MenuState : public engine::statesystem::State {
     using Entity = engine::entitysystem::Entity;
+    using Music = engine::soundsystem::Music;
     using ResourceStorage = engine::resourcesystem::ResourceStorage;
  public:
     MenuState(GameCoreData& gameData) : gameData(gameData) { }
@@ -22,14 +23,12 @@ class MenuState : public engine::statesystem::State {
 
     void onEnterImpl() override {
         ResourceStorage& storage = *gameData.resourceStorage;
-        auto bgm = storage.get<std::shared_ptr<sf::Music>>("bgm-littleroot-town");
-        bgm->play();
+        storage.get<Music>("bgm-littleroot-town").play();
     }
 
     void onExitImpl() override {
         ResourceStorage &storage = *gameData.resourceStorage;
-        auto bgm = storage.get<std::shared_ptr<sf::Music>>("bgm-littleroot-town");
-        bgm->stop();
+        storage.get<Music>("bgm-littleroot-town").stop();
     }
 
     GameCoreData& gameData;

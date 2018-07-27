@@ -3,6 +3,7 @@
 #include <cassert>
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
+#include "engine/sfml/sound-system/Music.hpp"
 #include "engine/sfml/sprite-system/include.hpp"
 
 using engine::resourcesystem::ResourceStorage;
@@ -32,8 +33,9 @@ void loadAnimationData(ResourceStorage& storage) {
 }
 
 void loadBGM(ResourceStorage& storage) {
-    auto littleRoot = std::make_shared<sf::Music>();
-    assert(littleRoot->openFromFile("resources/littleroot-town.wav"));
+    using namespace engine::soundsystem;
+    Music littleRoot;
+    assert(littleRoot.get().openFromFile("resources/littleroot-town.wav"));
     storage.store("bgm-littleroot-town", std::move(littleRoot));
 }
 

@@ -263,11 +263,11 @@ namespace dbg {
     }
 }
 
-namespace detail {
+namespace __detail {
     const auto xTraceFormatter = dbg::XTraceFormatter::instance();
 }
 
-#define XTRACE(x) dbg::trace((#x), (x), __detail::xTraceFormatter)
+#define XTRACE(x) dbg::trace((#x), (x), ::__detail::xTraceFormatter)
 
 #else
 
