@@ -70,6 +70,11 @@ namespace engine::entitysystem {
         template<typename T>
         void addComponent(Entity);
         /**
+         * \brief Adds a T component to an entity with the given data.
+         */
+        template<typename T>
+        void addComponent(Entity, T&&);
+        /**
          * \brief Removes the T component from an entity.
          */
         template<typename T>
@@ -141,6 +146,14 @@ namespace engine::entitysystem {
     template<typename T>
     inline void ComponentManager::addComponent(Entity entity) {
         entityData<T>().insert({entity, T()});
+    }
+
+    template<typename T>
+    inline void ComponentManager::addComponent(Entity entity, T&& data) {
+        entityData<std::decay_t<T>>().insert({
+            entity,
+            std::forward<T>(data)
+        });
     }
 
     template<typename T>

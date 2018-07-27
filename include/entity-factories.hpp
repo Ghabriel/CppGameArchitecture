@@ -10,10 +10,8 @@
 
 engine::entitysystem::Entity createCircle(engine::entitysystem::ComponentManager& manager) {
     auto entity = manager.createEntity();
-    manager.addComponent<CircularTraits>(entity);
-    manager.getData<CircularTraits>(entity) = {100, sf::Color::Blue};
-    manager.addComponent<Position>(entity);
-    manager.getData<Position>(entity) = {10, 20};
+    manager.addComponent<CircularTraits>(entity, {100, sf::Color::Blue});
+    manager.addComponent<Position>(entity, {10, 20});
     return entity;
 }
 
@@ -24,8 +22,10 @@ engine::entitysystem::Entity createPlayer(
     using namespace engine::spritesystem;
 
     auto entity = manager.createEntity();
-    manager.addComponent<LoopingAnimationData>(entity);
-    manager.getData<LoopingAnimationData>(entity) = storage.get<LoopingAnimationData>("player-walking-south");
+    manager.addComponent(
+        entity,
+        storage.get<LoopingAnimationData>("player-walking-south")
+    );
     manager.addComponent<AnimationPlaybackData>(entity);
     return entity;
 }

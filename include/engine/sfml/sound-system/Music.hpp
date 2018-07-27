@@ -13,9 +13,14 @@ namespace engine::soundsystem {
      public:
         Music();
 
+        /** \brief Retrieves the internal sf::Music instance. */
         sf::Music& get();
+
+        /** \brief Shortcut for .get().play(). */
         void play();
+        /** \brief Shortcut for .get().pause(). */
         void pause();
+        /** \brief Shortcut for .get().stop(). */
         void stop();
 
      private:
