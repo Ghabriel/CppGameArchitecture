@@ -3,7 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 #include "../../entity-system/include.hpp"
-#include "../../utils/xtrace.hpp"
 #include "AnimationData.hpp"
 #include "AnimationPlaybackData.hpp"
 #include "LoopingAnimationData.hpp"

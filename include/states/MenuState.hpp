@@ -5,8 +5,8 @@
 #include "../engine/resource-system/ResourceStorage.hpp"
 #include "../engine/sfml/sound-system/Music.hpp"
 #include "../engine/state-system/State.hpp"
-#include "../engine/utils/print-fps.hpp"
-#include "../engine/utils/xtrace.hpp"
+#include "../engine/utils/timing/print-fps.hpp"
+#include "../engine/utils/debug/xtrace.hpp"
 #include "../GameCoreData.hpp"
 
 class MenuState : public engine::statesystem::State {

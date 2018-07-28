@@ -4,7 +4,7 @@
 #include <atomic>
 #include <functional>
 #include <thread>
-#include "../utils/Clock.hpp"
+#include "../utils/timing/Clock.hpp"
 
 namespace engine::gameloop {
     /**

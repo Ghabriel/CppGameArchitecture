@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "engine/entity-system/include.hpp"
 #include "engine/game-loop/include.hpp"
-#include "engine/utils/print-fps.hpp"
+#include "engine/utils/timing/print-fps.hpp"
 #include "sfml-renderer-system.hpp"
 
 class Renderer {
