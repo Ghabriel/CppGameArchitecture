@@ -1,5 +1,5 @@
-#ifndef UTILS_CLOCK_HPP
-#define UTILS_CLOCK_HPP
+#ifndef UTILS_TIMING_CLOCK_HPP
+#define UTILS_TIMING_CLOCK_HPP
 
 #include <chrono>
 

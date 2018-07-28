@@ -1,5 +1,5 @@
-#ifndef UTILS_PROFILER_HPP
-#define UTILS_PROFILER_HPP
+#ifndef UTILS_TIMING_PROFILER_HPP
+#define UTILS_TIMING_PROFILER_HPP
 
 #include <chrono>
 

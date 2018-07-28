@@ -8,6 +8,12 @@
 
 using engine::resourcesystem::ResourceStorage;
 
+void loadFonts(ResourceStorage& storage) {
+    sf::Font arial;
+    assert(arial.loadFromFile("resources/fonts/arial.ttf"));
+    storage.store("font-arial", arial);
+}
+
 void loadTextures(ResourceStorage& storage) {
     sf::Texture texture;
     assert(texture.loadFromFile("resources/sprite-test.png"));
@@ -40,6 +46,7 @@ void loadBGM(ResourceStorage& storage) {
 }
 
 void loadResources(ResourceStorage& storage) {
+    loadFonts(storage);
     loadTextures(storage);
     loadAnimationData(storage);
     loadBGM(storage);

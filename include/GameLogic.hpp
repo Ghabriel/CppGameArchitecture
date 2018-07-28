@@ -28,8 +28,9 @@ class GameLogic {
     using ResourceStorage = engine::resourcesystem::ResourceStorage;
     using StateMachine = engine::statesystem::StateMachine;
  public:
-    GameLogic(ComponentManager& manager)
+    GameLogic(ComponentManager& manager, ResourceStorage& storage)
      : componentManager(manager),
+       resourceStorage(storage),
        inputTracker(loadInputTracker("resources/controls.json")),
        inputDispatcher(inputTracker) {
         gameData = {
@@ -56,9 +57,9 @@ class GameLogic {
 
  private:
     ComponentManager& componentManager;
+    ResourceStorage& resourceStorage;
     InputTracker inputTracker;
     InputDispatcher inputDispatcher;
-    ResourceStorage resourceStorage;
     StateMachine stateMachine;
     GameCoreData gameData;
 };

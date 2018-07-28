@@ -9,8 +9,9 @@ int mainGameLoop(int, char**) {
     using engine::gameloop::GameLoop;
     XInitThreads();
     engine::entitysystem::ComponentManager componentManager;
-    GameLogic logic(componentManager);
-    Renderer renderer(componentManager);
+    engine::resourcesystem::ResourceStorage resourceStorage;
+    GameLogic logic(componentManager, resourceStorage);
+    Renderer renderer(componentManager, resourceStorage);
 
     GameLoop gameLoop(
         [&](GameLoop& loop) { logic(loop); },

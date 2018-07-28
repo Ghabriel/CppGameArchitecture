@@ -5,18 +5,31 @@
 #include "../engine/resource-system/ResourceStorage.hpp"
 #include "../engine/sfml/sound-system/Music.hpp"
 #include "../engine/state-system/State.hpp"
+#include "../engine/utils/misc/Menu.hpp"
 #include "../engine/utils/timing/print-fps.hpp"
-#include "../engine/utils/debug/xtrace.hpp"
 #include "../GameCoreData.hpp"
 
 class MenuState : public engine::statesystem::State {
     using Entity = engine::entitysystem::Entity;
+    using Menu = engine::utils::Menu;
     using Music = engine::soundsystem::Music;
     using ResourceStorage = engine::resourcesystem::ResourceStorage;
  public:
-    MenuState(GameCoreData& gameData) : gameData(gameData) { }
+    MenuState(GameCoreData& gameData)
+     : gameData(gameData),
+       menuEntity(gameData.componentManager->createEntity()) {
+        Menu menu(*gameData.stateMachine);
+        menu.addOption("New Game", "menu-state");
+        menu.addOption("Load Game", "menu-state");
+        menu.addOption("About", "menu-state");
+
+        gameData.componentManager->addComponent(menuEntity, menu);
+    }
 
  private:
+    GameCoreData& gameData;
+    Entity menuEntity;
+
     void executeImpl() override {
         engine::utils::printFPS<1>("Menu Update Rate", 50);
     }
@@ -30,9 +43,6 @@ class MenuState : public engine::statesystem::State {
         ResourceStorage &storage = *gameData.resourceStorage;
         storage.get<Music>("bgm-littleroot-town").stop();
     }
-
-    GameCoreData& gameData;
-    Entity environment;
 };
 
 #endif

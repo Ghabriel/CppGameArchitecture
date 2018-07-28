@@ -1,5 +1,5 @@
-#ifndef UTILS_PRINT_FPS_HPP
-#define UTILS_PRINT_FPS_HPP
+#ifndef UTILS_TIMING_PRINT_FPS_HPP
+#define UTILS_TIMING_PRINT_FPS_HPP
 
 #include <iomanip>
 #include <iostream>
