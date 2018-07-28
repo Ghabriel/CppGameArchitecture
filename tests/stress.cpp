@@ -18,10 +18,16 @@ int main(int, char**) {
     engine::entitysystem::ComponentManager manager;
     engine::utils::Profiler profiler;
 
+    manager.reserve<X>(1e7);
+
+    profiler.start();
     for (size_t i = 0; i < 1e7; i++) {
         Entity e = manager.createEntity();
         manager.addComponent<X>(e);
     }
+    profiler.finish();
+    std::cout << "Elapsed time (addComponent): " <<
+        profiler.measureAsMilliseconds() << "ms" << std::endl;
 
     size_t counter = 0;
 
@@ -32,5 +38,6 @@ int main(int, char**) {
     profiler.finish();
 
     std::cout << counter << std::endl;
-    std::cout << "Elapsed time: " << profiler.measureAsMilliseconds() << "ms" << std::endl;
+    std::cout << "Elapsed time (forEachEntity): " <<
+        profiler.measureAsMilliseconds() << "ms" << std::endl;
 }

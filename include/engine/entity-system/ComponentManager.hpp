@@ -65,6 +65,13 @@ namespace engine::entitysystem {
         void clearAll();
 
         /**
+         * \brief Prepares the underlying structure to store at least `count`
+         * entity-T component bindings.
+         */
+        template<typename T>
+        void reserve(size_t count);
+
+        /**
          * \brief Adds a default-initialized T component to an entity.
          */
         template<typename T>
@@ -145,6 +152,11 @@ namespace engine::entitysystem {
         if constexpr (sizeof...(Ts) > 0) {
             clearAll<Ts...>();
         }
+    }
+
+    template<typename T>
+    void ComponentManager::reserve(size_t count) {
+        entityData<T>().reserve(count);
     }
 
     template<typename T>
