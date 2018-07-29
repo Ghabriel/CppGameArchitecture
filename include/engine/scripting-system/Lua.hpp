@@ -8,6 +8,8 @@
 
 namespace engine::scriptingsystem {
     class Lua {
+        template<typename Ret, typename... Args>
+        using CFunction = Ret (*)(Args...);
      public:
         Lua(const std::string& filename);
 
@@ -16,10 +18,13 @@ namespace engine::scriptingsystem {
         template<typename T, typename... Args>
         T call(const std::string& functionName, Args&&...);
 
+        template<typename Functor>
+        void registerNative(const std::string& luaFunctionName, Functor fn);
+
      private:
         LuaWrapper luaState;
 
-        size_t pushVariableToStack(const std::string& variableName);
+        size_t pushVariableValue(const std::string& variableName);
         void pushGlobalOrField(const std::string& value, size_t level);
     };
 
@@ -27,7 +32,7 @@ namespace engine::scriptingsystem {
 
     template<typename T>
     inline T Lua::get(const std::string& variableName) {
-        size_t level = pushVariableToStack(variableName);
+        size_t level = pushVariableValue(variableName);
         T result = luaState.get<T>();
         luaState.pop(level + 1);
         return result;
@@ -48,7 +53,13 @@ namespace engine::scriptingsystem {
         }
     }
 
-    inline size_t Lua::pushVariableToStack(const std::string& variableName) {
+    template <typename Functor>
+    inline void Lua::registerNative(const std::string& luaFunctionName, Functor fn) {
+        luaState.pushFunction(luaState.createLuaFunction(fn));
+        luaState.setGlobal(luaFunctionName);
+    }
+
+    inline size_t Lua::pushVariableValue(const std::string& variableName) {
         size_t level = 0;
         std::string var;
 

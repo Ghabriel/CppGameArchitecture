@@ -15,3 +15,9 @@ end
 function setPlayerHP(value)
     player.HP = value
 end
+
+function testCppFunction()
+    write("Hello, world!")
+    local x = 42
+    write("Answer: "..x)
+end

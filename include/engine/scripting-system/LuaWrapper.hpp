@@ -2,11 +2,46 @@
 #define SCRIPTING_SYSTEM_LUA_WRAPPER_HPP
 
 #include <cassert>
+#include <functional>
 #include "LuaRAII.hpp"
+#include "../utils/debug/xtrace.hpp"
 
 namespace engine::scriptingsystem {
+    namespace __detail {
+        template<typename T>
+        T get(lua_State* L);
+
+        template<>
+        inline bool get(lua_State* L) {
+            return lua_toboolean(L, -1);
+        }
+
+        template<>
+        inline float get(lua_State* L) {
+            assert(lua_isnumber(L, -1));
+            return lua_tonumber(L, -1);
+        }
+
+        template<>
+        inline int get(lua_State* L) {
+            assert(lua_isnumber(L, -1));
+            return lua_tonumber(L, -1);
+        }
+
+        template<>
+        inline std::string get(lua_State* L) {
+            assert(lua_isstring(L, -1));
+            return std::string(lua_tostring(L, -1));
+        }
+    }
+
     class LuaWrapper {
+        template<typename Ret, typename... Args>
+        using CFunction = Ret (*)(Args...);
      public:
+        using LuaCFunction = CFunction<int, lua_State*>;
+        using LuaFunction = std::function<int(lua_State*)>;
+
         LuaWrapper(const std::string& filename);
 
         void pushGlobal(const std::string& variableName);
@@ -14,11 +49,18 @@ namespace engine::scriptingsystem {
         void pop(size_t count = 1);
         template<typename T>
         void pushValue(const T&);
+        void pushFunction(LuaCFunction);
+        void setGlobal(const std::string& globalName);
         void call(size_t paramCount, size_t returnCount);
 
         bool isNil() const;
         template<typename T>
         T get() const;
+
+        template<typename Ret, typename... Args>
+        LuaCFunction createLuaFunction(CFunction<Ret, Args...>);
+        // template<typename Ret, typename... Args>
+        // LuaFunction createLuaFunction(std::function<Ret(Args...)>);
 
      private:
         LuaRAII L;
@@ -58,6 +100,16 @@ namespace engine::scriptingsystem {
         lua_pushstring(L.get(), value.c_str());
     }
 
+    inline void LuaWrapper::pushFunction(LuaCFunction fn) {
+        // lua_pushcfunction(L.get(), *x);
+        // lua_pushcfunction(L.get(), *fn.target<int (*)(lua_State*)>());
+        lua_pushcfunction(L.get(), fn);
+    }
+
+    inline void LuaWrapper::setGlobal(const std::string& globalName) {
+        lua_setglobal(L.get(), globalName.c_str());
+    }
+
     inline void LuaWrapper::call(size_t paramCount, size_t returnCount) {
         lua_pcall(L.get(), paramCount, returnCount, 0);
     }
@@ -66,28 +118,42 @@ namespace engine::scriptingsystem {
         return lua_isnil(L.get(), -1);
     }
 
-    template<>
-    inline bool LuaWrapper::get() const {
-        return lua_toboolean(L.get(), -1);
+    template<typename T>
+    inline T LuaWrapper::get() const {
+        return __detail::get<T>(L.get());
     }
 
-    template<>
-    inline float LuaWrapper::get() const {
-        assert(lua_isnumber(L.get(), -1));
-        return lua_tonumber(L.get(), -1);
+    template<typename Ret, typename... Args>
+    inline LuaWrapper::LuaCFunction LuaWrapper::createLuaFunction(CFunction<Ret, Args...> fn) {
+        static auto staticFn = fn;
+
+        struct Container {
+            static int luaWrapper(lua_State* rawState) {
+                staticFn(__detail::get<std::decay_t<Args>>(rawState)...);
+
+                if constexpr (std::is_same_v<Ret, void>) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        };
+
+        return &Container::luaWrapper;
     }
 
-    template<>
-    inline int LuaWrapper::get() const {
-        assert(lua_isnumber(L.get(), -1));
-        return lua_tonumber(L.get(), -1);
-    }
+    // template<typename Ret, typename... Args>
+    // LuaWrapper::LuaFunction LuaWrapper::createLuaFunction(std::function<Ret(Args...)> fn) {
+    //     return [*this, fn](lua_State* rawState) {
+    //         fn(get<Args>()...);
 
-    template<>
-    inline std::string LuaWrapper::get() const {
-        assert(lua_isstring(L.get(), -1));
-        return std::string(lua_tostring(L.get(), -1));
-    }
+    //         if constexpr (std::is_same_v<Ret, void>) {
+    //             return 0;
+    //         } else {
+    //             return 1;
+    //         }
+    //     };
+    // }
 }
 
 #endif
