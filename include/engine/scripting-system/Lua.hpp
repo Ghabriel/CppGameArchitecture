@@ -8,8 +8,6 @@
 
 namespace engine::scriptingsystem {
     class Lua {
-        template<typename Ret, typename... Args>
-        using CFunction = Ret (*)(Args...);
      public:
         Lua(const std::string& filename);
 
@@ -55,7 +53,7 @@ namespace engine::scriptingsystem {
 
     template <typename Functor>
     inline void Lua::registerNative(const std::string& luaFunctionName, Functor fn) {
-        luaState.pushFunction(luaState.createLuaFunction(fn));
+        luaState.pushFunction(fn);
         luaState.setGlobal(luaFunctionName);
     }
 

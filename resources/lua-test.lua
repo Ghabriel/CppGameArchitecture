@@ -18,6 +18,8 @@ end
 
 function testCppFunction()
     write("Hello, world!")
+    ignore("A")
     local x = 42
     write("Answer: "..x)
+    ignore("B")
 end

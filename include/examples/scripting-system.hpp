@@ -5,6 +5,10 @@ void write(const std::string& str) {
     std::cout << str << std::endl;
 }
 
+void ignore(const std::string& str) {
+    std::cout << "[IGNORED]" << std::endl;
+}
+
 int mainScriptingSystem(int, char**) {
     engine::scriptingsystem::Lua script("resources/lua-test.lua");
     std::cout << "filename: " << script.get<std::string>("player.filename") << std::endl;
@@ -16,6 +20,7 @@ int mainScriptingSystem(int, char**) {
     std::cout << "HP: " << script.get<int>("player.HP") << std::endl;
 
     script.registerNative("write", write);
+    script.registerNative("ignore", ignore);
     script.call<void>("testCppFunction");
 
     return 0;

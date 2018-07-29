@@ -40,7 +40,6 @@ namespace engine::scriptingsystem {
         using CFunction = Ret (*)(Args...);
      public:
         using LuaCFunction = CFunction<int, lua_State*>;
-        using LuaFunction = std::function<int(lua_State*)>;
 
         LuaWrapper(const std::string& filename);
 
@@ -49,18 +48,14 @@ namespace engine::scriptingsystem {
         void pop(size_t count = 1);
         template<typename T>
         void pushValue(const T&);
-        void pushFunction(LuaCFunction);
+        template <typename Ret, typename... Args>
+        void pushFunction(CFunction<Ret, Args...>);
         void setGlobal(const std::string& globalName);
         void call(size_t paramCount, size_t returnCount);
 
         bool isNil() const;
         template<typename T>
         T get() const;
-
-        template<typename Ret, typename... Args>
-        LuaCFunction createLuaFunction(CFunction<Ret, Args...>);
-        // template<typename Ret, typename... Args>
-        // LuaFunction createLuaFunction(std::function<Ret(Args...)>);
 
      private:
         LuaRAII L;
@@ -100,9 +95,30 @@ namespace engine::scriptingsystem {
         lua_pushstring(L.get(), value.c_str());
     }
 
+    template<typename Ret, typename... Args>
+    void LuaWrapper::pushFunction(CFunction<Ret, Args...> fn) {
+        static auto& localL = L;
+
+        struct Container {
+            static int luaWrapper(lua_State* rawState) {
+                void* voidFn = lua_touserdata(localL.get(), lua_upvalueindex(1));
+                auto retrievedFn = reinterpret_cast<CFunction<Ret, Args...>>(voidFn);
+                retrievedFn(__detail::get<std::decay_t<Args>>(rawState)...);
+
+                if constexpr (std::is_same_v<Ret, void>) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        };
+
+        lua_pushlightuserdata(L.get(), reinterpret_cast<void*>(fn));
+        lua_pushcclosure(L.get(), &Container::luaWrapper, 1);
+    }
+
+    template<>
     inline void LuaWrapper::pushFunction(LuaCFunction fn) {
-        // lua_pushcfunction(L.get(), *x);
-        // lua_pushcfunction(L.get(), *fn.target<int (*)(lua_State*)>());
         lua_pushcfunction(L.get(), fn);
     }
 
@@ -122,38 +138,6 @@ namespace engine::scriptingsystem {
     inline T LuaWrapper::get() const {
         return __detail::get<T>(L.get());
     }
-
-    template<typename Ret, typename... Args>
-    inline LuaWrapper::LuaCFunction LuaWrapper::createLuaFunction(CFunction<Ret, Args...> fn) {
-        static auto staticFn = fn;
-
-        struct Container {
-            static int luaWrapper(lua_State* rawState) {
-                staticFn(__detail::get<std::decay_t<Args>>(rawState)...);
-
-                if constexpr (std::is_same_v<Ret, void>) {
-                    return 0;
-                } else {
-                    return 1;
-                }
-            }
-        };
-
-        return &Container::luaWrapper;
-    }
-
-    // template<typename Ret, typename... Args>
-    // LuaWrapper::LuaFunction LuaWrapper::createLuaFunction(std::function<Ret(Args...)> fn) {
-    //     return [*this, fn](lua_State* rawState) {
-    //         fn(get<Args>()...);
-
-    //         if constexpr (std::is_same_v<Ret, void>) {
-    //             return 0;
-    //         } else {
-    //             return 1;
-    //         }
-    //     };
-    // }
 }
 
 #endif
