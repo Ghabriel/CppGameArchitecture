@@ -44,70 +44,82 @@ void testInputSystem() {
         InputTracker inputTracker(std::unique_ptr<RawInput>(rawInputPtr), keyMapping);
         InputDispatcher inputDispatcher(inputTracker);
 
+        bool firedEventA = false;
+        bool firedEventS = false;
+
         auto addBasicContext = [&]() {
             InputContext context;
-            context.actions = {{"KA", "EventA"}};
-            context.states = {{"KS", "EventS"}};
+            context.actions = {{"KA", [&] { firedEventA = true; }}};
+            context.states = {{"KS", [&] { firedEventS = true; }}};
             inputDispatcher.registerContext("ContextA", context);
         };
 
         before([&]() {
             rawInput.releaseAll();
             inputDispatcher.clear();
+            firedEventA = false;
+            firedEventS = false;
         });
 
         it("reacts to actions appropriately", [&]() {
             addBasicContext();
             inputDispatcher.enableContext("ContextA");
 
-            bool flag = false;
-            inputDispatcher.addObserver([&](const EventIdentifier& event) {
-                expect(event).toBe("EventA");
-                flag = true;
-            });
-
             rawInput.press(KeyboardKey::A);
             inputDispatcher.tick();
-            expect(flag).toBe(true);
+            expect(firedEventA).toBe(true);
+            expect(firedEventS).toBe(false);
 
-            flag = false;
+            firedEventA = false;
             inputDispatcher.tick();
-            expect(flag).toBe(false);
+            expect(firedEventA).toBe(false);
+            expect(firedEventS).toBe(false);
         });
 
         it("reacts to states appropriately", [&]() {
             addBasicContext();
             inputDispatcher.enableContext("ContextA");
 
-            bool flag = false;
-            inputDispatcher.addObserver([&](const EventIdentifier &event) {
-                expect(event).toBe("EventS");
-                flag = true;
-            });
-
             rawInput.press(KeyboardKey::S);
             inputDispatcher.tick();
-            expect(flag).toBe(true);
+            expect(firedEventA).toBe(false);
+            expect(firedEventS).toBe(true);
 
-            flag = false;
+            firedEventS = false;
             inputDispatcher.tick();
-            expect(flag).toBe(true);
+            expect(firedEventA).toBe(false);
+            expect(firedEventS).toBe(true);
         });
 
         it("respects the priority of the contexts", [&]() {
+            bool firedAA = false;
+            bool firedAS = false;
+            bool firedAD = false;
+            bool firedBA = false;
+            bool firedCS = false;
+
             InputContext contextA;
-            contextA.actions = {{"KA", "(A) EventA"}, {"KD", "(A) EventD"}};
-            contextA.states = {{"KS", "(A) EventS"}};
+            contextA.actions = {
+                {"KA", [&] { firedAA = true; }},
+                {"KD", [&] { firedAD = true; }}
+            };
+            contextA.states = {
+                {"KS", [&] { firedAS = true; }}
+            };
             contextA.priority = 1;
             inputDispatcher.registerContext("ContextA", contextA);
 
             InputContext contextB;
-            contextB.actions = {{"KA", "(B) EventA"}};
+            contextB.actions = {
+                {"KA", [&] { firedBA = true; }}
+            };
             contextB.priority = 2;
             inputDispatcher.registerContext("ContextB", contextB);
 
             InputContext contextC;
-            contextC.states = {{"KS", "(C) EventS"}};
+            contextC.states = {
+                {"KS", [&] { firedCS = true; }}
+            };
             contextC.priority = 3;
             inputDispatcher.registerContext("ContextC", contextC);
 
@@ -115,24 +127,25 @@ void testInputSystem() {
             inputDispatcher.enableContext("ContextA");
             inputDispatcher.enableContext("ContextB");
 
-            std::unordered_set<std::string> triggeredEvents;
-            inputDispatcher.addObserver([&](const EventIdentifier& event) {
-                triggeredEvents.insert(event);
-            });
-
             rawInput.press(KeyboardKey::A);
             rawInput.press(KeyboardKey::S);
             rawInput.press(KeyboardKey::D);
             inputDispatcher.tick();
-            expect(triggeredEvents.size()).toBe(3);
-            expect(triggeredEvents.count("(A) EventD")).toBe(1);
-            expect(triggeredEvents.count("(B) EventA")).toBe(1);
-            expect(triggeredEvents.count("(C) EventS")).toBe(1);
+            expect(firedAA).toBe(false);
+            expect(firedAS).toBe(false);
+            expect(firedAD).toBe(true);
+            expect(firedBA).toBe(true);
+            expect(firedCS).toBe(true);
 
-            triggeredEvents.clear();
+            firedAD = false;
+            firedBA = false;
+            firedCS = false;
             inputDispatcher.tick();
-            expect(triggeredEvents.size()).toBe(1);
-            expect(triggeredEvents.count("(C) EventS")).toBe(1);
+            expect(firedAA).toBe(false);
+            expect(firedAS).toBe(false);
+            expect(firedAD).toBe(false);
+            expect(firedBA).toBe(false);
+            expect(firedCS).toBe(true);
         });
     });
 }

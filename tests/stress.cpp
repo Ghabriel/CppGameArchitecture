@@ -1,6 +1,6 @@
 #include <iostream>
 #include "engine/entity-system/include.hpp"
-#include "engine/utils/Profiler.hpp"
+#include "engine/utils/timing/Profiler.hpp"
 
 struct X {};
 

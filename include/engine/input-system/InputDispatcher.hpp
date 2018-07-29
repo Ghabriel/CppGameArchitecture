@@ -21,34 +21,25 @@ namespace engine::inputsystem {
     }
 
     /**
-     * \brief Manages the active input contexts and emits their callback
-     * identifiers at the appropriate moments to input observers.
+     * \brief Manages the active input contexts and triggers their callbacks
+     * at the appropriate moments.
      */
     class InputDispatcher {
         using InputContextPointerCompare = __detail::InputContextPointerCompare;
      public:
-        using Observer = std::function<void(const EventIdentifier&)>;
-
         explicit InputDispatcher(InputTracker&);
 
         /**
-         * \brief Clears the active contexts, all registered contexts and all
-         * registered observers. This instance becomes effectively the same as
-         * when it was constructed.
+         * \brief Clears the enabled contexts and all registered contexts. This
+         * instance becomes effectively the same as when it was constructed.
          */
         void clear();
 
         /**
          * \brief Should be called at every update tick. Updates the
-         * internal structures and dispatches appropriate callback
-         * identifiers to all input observers.
+         * internal structures and dispatches appropriate callbacks.
          */
         void tick();
-
-        /**
-         * \brief Adds an observer to this input dispatcher.
-         */
-        void addObserver(Observer fn);
 
         /**
          * \brief Registers a context, mapping it to a given name.
@@ -71,7 +62,6 @@ namespace engine::inputsystem {
     
      private:
         InputTracker& inputTracker;
-        std::vector<Observer> observers;
         std::set<const InputContext*, InputContextPointerCompare> activeContexts;
         std::unordered_map<std::string, const InputContext> registeredContexts;
     };
@@ -79,7 +69,6 @@ namespace engine::inputsystem {
     inline InputDispatcher::InputDispatcher(InputTracker& tracker) : inputTracker(tracker) {}
 
     inline void InputDispatcher::clear() {
-        observers.clear();
         activeContexts.clear();
         registeredContexts.clear();
     }
@@ -87,34 +76,23 @@ namespace engine::inputsystem {
     inline void InputDispatcher::tick() {
         inputTracker.tick();
 
-        std::unordered_map<GameKey, EventIdentifier> triggeredEvents;
-
-        for (const InputContext* context : activeContexts) {
-            const auto& actions = context->actions;
-            const auto& states = context->states;
-
-            inputTracker.forEachActionKey([&](const GameKey& key) {
-                if (actions.count(key)) {
-                    triggeredEvents.insert({key, actions.at(key)});
+        inputTracker.forEachActionKey([&](const GameKey& key) {
+            for (const InputContext* context : activeContexts) {
+                if (context->actions.count(key)) {
+                    context->actions.at(key)();
+                    break;
                 }
-            });
-
-            inputTracker.forEachStateKey([&](const GameKey& key) {
-                if (states.count(key)) {
-                    triggeredEvents.insert({key, states.at(key)});
-                }
-            });
-        }
-
-        for (const auto& [_, eventIdentifier] : triggeredEvents) {
-            for (const auto& observer : observers) {
-                observer(eventIdentifier);
             }
-        }
-    }
+        });
 
-    inline void InputDispatcher::addObserver(Observer fn) {
-        observers.push_back(fn);
+        inputTracker.forEachStateKey([&](const GameKey& key) {
+            for (const InputContext* context : activeContexts) {
+                if (context->states.count(key)) {
+                    context->states.at(key)();
+                    break;
+                }
+            }
+        });
     }
 
     inline void InputDispatcher::registerContext(

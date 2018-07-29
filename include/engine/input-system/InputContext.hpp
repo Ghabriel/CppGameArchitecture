@@ -1,6 +1,7 @@
 #ifndef INPUT_SYSTEM_INPUT_CONTEXT_HPP
 #define INPUT_SYSTEM_INPUT_CONTEXT_HPP
 
+#include <functional>
 #include <unordered_map>
 #include "types.hpp"
 
@@ -22,8 +23,8 @@ namespace engine::inputsystem {
      * input.
      */
     struct InputContext {
-        std::unordered_map<GameKey, EventIdentifier> actions;
-        std::unordered_map<GameKey, EventIdentifier> states;
+        std::unordered_map<GameKey, std::function<void()>> actions;
+        std::unordered_map<GameKey, std::function<void()>> states;
         size_t priority;
     };
 }
