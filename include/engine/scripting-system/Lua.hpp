@@ -20,6 +20,7 @@ namespace engine::scriptingsystem {
         LuaWrapper luaState;
 
         size_t pushVariableToStack(const std::string& variableName);
+        void pushGlobalOrField(const std::string& value, size_t level);
     };
 
     inline Lua::Lua(const std::string& filename) : luaState(filename) { }
@@ -34,12 +35,17 @@ namespace engine::scriptingsystem {
 
     template<typename T, typename... Args>
     inline T Lua::call(const std::string& functionName, Args&&... args) {
-        pushVariableToStack(functionName);
+        luaState.pushGlobal(functionName);
         (luaState.pushValue(std::forward<Args>(args)), ...);
-        luaState.call(sizeof...(args));
-        T result = luaState.get<T>();
-        luaState.pop();
-        return result;
+
+        if constexpr (!std::is_same_v<T, void>) {
+            luaState.call(sizeof...(args), 1);
+            T result = luaState.get<T>();
+            luaState.pop();
+            return result;
+        } else {
+            luaState.call(sizeof...(args), 0);
+        }
     }
 
     inline size_t Lua::pushVariableToStack(const std::string& variableName) {
@@ -51,26 +57,24 @@ namespace engine::scriptingsystem {
                 var += ch;
                 continue;
             }
-            
-            if (level == 0) {
-                luaState.pushGlobal(var);
-            } else {
-                luaState.pushField(var);
-            }
 
-            assert(!luaState.isNil());
+            pushGlobalOrField(var, level);
             var = "";
             ++level;
         }
 
+        pushGlobalOrField(var, level);
+        return level;
+    }
+
+    inline void Lua::pushGlobalOrField(const std::string& value, size_t level) {
         if (level == 0) {
-            luaState.pushGlobal(var);
+            luaState.pushGlobal(value);
         } else {
-            luaState.pushField(var);
+            luaState.pushField(value);
         }
 
         assert(!luaState.isNil());
-        return level;
     }
 }
 

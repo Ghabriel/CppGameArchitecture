@@ -11,3 +11,7 @@ player = {
 function sum(x, y)
     return x + y
 end
+
+function setPlayerHP(value)
+    player.HP = value
+end

@@ -14,7 +14,7 @@ namespace engine::scriptingsystem {
         void pop(size_t count = 1);
         template<typename T>
         void pushValue(const T&);
-        void call(size_t paramCount);
+        void call(size_t paramCount, size_t returnCount);
 
         bool isNil() const;
         template<typename T>
@@ -58,8 +58,8 @@ namespace engine::scriptingsystem {
         lua_pushstring(L.get(), value.c_str());
     }
 
-    inline void LuaWrapper::call(size_t paramCount) {
-        lua_pcall(L.get(), paramCount, 1, 0);
+    inline void LuaWrapper::call(size_t paramCount, size_t returnCount) {
+        lua_pcall(L.get(), paramCount, returnCount, 0);
     }
 
     inline bool LuaWrapper::isNil() const {
