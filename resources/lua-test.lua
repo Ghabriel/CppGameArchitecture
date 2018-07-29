@@ -7,3 +7,7 @@ player = {
     HP = 20,
 -- you can also have comments
 }
+
+function sum(x, y)
+    return x + y
+end

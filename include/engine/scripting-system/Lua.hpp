@@ -13,26 +13,37 @@ namespace engine::scriptingsystem {
 
         template<typename T>
         T get(const std::string& variableName);
+        template<typename T, typename... Args>
+        T call(const std::string& functionName, Args&&...);
 
      private:
         LuaWrapper luaState;
-        int level;
 
-        void pushValueToStack(const std::string& variableName);
+        size_t pushVariableToStack(const std::string& variableName);
     };
 
     inline Lua::Lua(const std::string& filename) : luaState(filename) { }
 
     template<typename T>
     inline T Lua::get(const std::string& variableName) {
-        pushValueToStack(variableName);
+        size_t level = pushVariableToStack(variableName);
         T result = luaState.get<T>();
         luaState.pop(level + 1);
         return result;
     }
 
-    inline void Lua::pushValueToStack(const std::string& variableName) {
-        level = 0;
+    template<typename T, typename... Args>
+    inline T Lua::call(const std::string& functionName, Args&&... args) {
+        pushVariableToStack(functionName);
+        (luaState.pushValue(std::forward<Args>(args)), ...);
+        luaState.call(sizeof...(args));
+        T result = luaState.get<T>();
+        luaState.pop();
+        return result;
+    }
+
+    inline size_t Lua::pushVariableToStack(const std::string& variableName) {
+        size_t level = 0;
         std::string var;
 
         for (char ch : variableName) {
@@ -59,6 +70,7 @@ namespace engine::scriptingsystem {
         }
 
         assert(!luaState.isNil());
+        return level;
     }
 }
 

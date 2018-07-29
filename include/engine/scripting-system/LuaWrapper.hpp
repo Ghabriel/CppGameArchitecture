@@ -12,6 +12,10 @@ namespace engine::scriptingsystem {
         void pushGlobal(const std::string& variableName);
         void pushField(const std::string& fieldName);
         void pop(size_t count = 1);
+        template<typename T>
+        void pushValue(const T&);
+        void call(size_t paramCount);
+
         bool isNil() const;
         template<typename T>
         T get() const;
@@ -32,6 +36,30 @@ namespace engine::scriptingsystem {
 
     inline void LuaWrapper::pop(size_t count) {
         lua_pop(L.get(), count);
+    }
+
+    template<>
+    inline void LuaWrapper::pushValue(const bool& value) {
+        lua_pushboolean(L.get(), value);
+    }
+
+    template<>
+    inline void LuaWrapper::pushValue(const float& value) {
+        lua_pushnumber(L.get(), value);
+    }
+
+    template<>
+    inline void LuaWrapper::pushValue(const int& value) {
+        lua_pushnumber(L.get(), value);
+    }
+
+    template<>
+    inline void LuaWrapper::pushValue(const std::string& value) {
+        lua_pushstring(L.get(), value.c_str());
+    }
+
+    inline void LuaWrapper::call(size_t paramCount) {
+        lua_pcall(L.get(), paramCount, 1, 0);
     }
 
     inline bool LuaWrapper::isNil() const {

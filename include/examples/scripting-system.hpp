@@ -3,10 +3,9 @@
 
 int mainScriptingSystem(int, char**) {
     engine::scriptingsystem::Lua script("resources/lua-test.lua");
-    std::string filename = script.get<std::string>("player.filename");
-    int posX = script.get<int>("player.pos.X");
-    std::cout << "filename: " << filename << std::endl;
-    std::cout << "posX: " << posX << std::endl;
+    std::cout << "filename: " << script.get<std::string>("player.filename") << std::endl;
+    std::cout << "posX: " << script.get<int>("player.pos.X") << std::endl;
+    std::cout << "5 + 7 = " << script.call<int>("sum", 5, 7) << std::endl;
 
     return 0;
 }
