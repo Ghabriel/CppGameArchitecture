@@ -7,15 +7,31 @@
 #include "LuaWrapper.hpp"
 
 namespace engine::scriptingsystem {
+    /**
+     * \brief Provides a simple API to a %Lua file.
+     */
     class Lua {
      public:
         Lua(const std::string& filename);
 
+        /**
+         * \brief Retrieves the value of a variable. The syntax "a.b.c" is
+         * supported to retrieve specific fields of a structure.
+         */
         template<typename T>
         T get(const std::string& variableName);
+
+        /**
+         * \brief Calls a %Lua function, given its name and an argument list.
+         * The return type (T) must be specified.
+         */
         template<typename T, typename... Args>
         T call(const std::string& functionName, Args&&...);
 
+        /**
+         * \brief Registers a C/C++ function to make it available in the %Lua
+         * script with a specified name.
+         */
         template<typename Functor>
         void registerNative(const std::string& luaFunctionName, Functor fn);
 
