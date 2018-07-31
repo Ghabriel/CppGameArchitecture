@@ -1,28 +1,27 @@
-#ifndef MULTI_THREAD_GAME_LOOP_HPP
-#define MULTI_THREAD_GAME_LOOP_HPP
+#ifndef SINGLE_THREAD_GAME_LOOP_HPP
+#define SINGLE_THREAD_GAME_LOOP_HPP
 
-#include <atomic>
 #include <functional>
 #include <thread>
 #include "../utils/timing/Clock.hpp"
 
 namespace engine::gameloop {
     /**
-     * \brief Manages a multi-threaded game loop and provides control
+     * \brief Manages a single-threaded game loop and provides control
      * mechanisms to it.
      */
-    class MultiThreadGameLoop {
+    class SingleThreadGameLoop {
         using Clock = utils::Clock;
      public:
-        MultiThreadGameLoop(
-            std::function<void(MultiThreadGameLoop&)> update,
-            std::function<void(MultiThreadGameLoop&, double)> render
+        SingleThreadGameLoop(
+            std::function<void(SingleThreadGameLoop&, double)> update,
+            std::function<void(SingleThreadGameLoop&)> render
         );
 
-        MultiThreadGameLoop(MultiThreadGameLoop&) = delete;
-        MultiThreadGameLoop(MultiThreadGameLoop&&) = delete;
-        MultiThreadGameLoop& operator=(MultiThreadGameLoop&) = delete;
-        MultiThreadGameLoop& operator=(MultiThreadGameLoop&&) = delete;
+        SingleThreadGameLoop(SingleThreadGameLoop&) = delete;
+        SingleThreadGameLoop(SingleThreadGameLoop&&) = delete;
+        SingleThreadGameLoop& operator=(SingleThreadGameLoop&) = delete;
+        SingleThreadGameLoop& operator=(SingleThreadGameLoop&&) = delete;
 
         /**
          * \brief Changes the frequency at which update calls are fired.
@@ -49,18 +48,15 @@ namespace engine::gameloop {
 
      private:
         static constexpr int defaultUpdateFrequency = 25;
-        std::function<void(MultiThreadGameLoop&)> update;
-        std::function<void(MultiThreadGameLoop&, double)> render;
-        int updatePeriod;
+        std::function<void(SingleThreadGameLoop&, double)> update;
+        std::function<void(SingleThreadGameLoop&)> render;
+        double updatePeriod;
 
-        std::thread updateThread;
-        std::thread renderThread;
+        std::thread gameLoopThread;
         bool running = false;
         Clock clock;
-        std::atomic<intmax_t> nextUpdate;
 
-        void spawnUpdateThread();
-        void spawnRenderThread();
+        void spawnGameLoopThread();
     };
 }
 

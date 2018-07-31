@@ -1,5 +1,6 @@
 // #include "examples/entity-system.hpp"
-#include "examples/game-loop.hpp"
+#include "examples/single-thread-game-loop.hpp"
+// #include "examples/multi-thread-game-loop.hpp"
 // #include "examples/scripting-system.hpp"
 // #include "examples/state-system.hpp"
 

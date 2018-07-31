@@ -1,5 +1,5 @@
-#ifndef MULTI_THREAD_GAME_LOOP_HPP
-#define MULTI_THREAD_GAME_LOOP_HPP
+#ifndef GAME_LOOP_HPP
+#define GAME_LOOP_HPP
 
 #include <atomic>
 #include <functional>
