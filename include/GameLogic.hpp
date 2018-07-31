@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
 #include "engine/entity-system/include.hpp"
-#include "engine/game-loop/include.hpp"
+#include "engine/game-loop/MultiThreadGameLoop.hpp"
 #include "engine/input-system/include.hpp"
 #include "engine/resource-system/ResourceStorage.hpp"
 #include "engine/sfml/sprite-system/include.hpp"
@@ -21,7 +21,7 @@ class GameLogic {
     using ComponentManager = engine::entitysystem::ComponentManager;
     using Entity = engine::entitysystem::Entity;
     using EventIdentifier = engine::inputsystem::EventIdentifier;
-    using GameLoop = engine::gameloop::GameLoop;
+    using GameLoop = engine::gameloop::MultiThreadGameLoop;
     using InputContext = engine::inputsystem::InputContext;
     using InputDispatcher = engine::inputsystem::InputDispatcher;
     using InputTracker = engine::inputsystem::InputTracker;

@@ -8,20 +8,21 @@
 
 namespace engine::gameloop {
     /**
-     * \brief Manages the game loop and provides control mechanisms to it.
+     * \brief Manages a multi-threaded game loop and provides control
+     * mechanisms to it.
      */
-    class GameLoop {
+    class MultiThreadGameLoop {
         using Clock = utils::Clock;
      public:
-        GameLoop(
-            std::function<void(GameLoop&)> update,
-            std::function<void(GameLoop&, double)> render
+        MultiThreadGameLoop(
+            std::function<void(MultiThreadGameLoop&)> update,
+            std::function<void(MultiThreadGameLoop&, double)> render
         );
 
-        GameLoop(GameLoop&) = delete;
-        GameLoop(GameLoop&&) = delete;
-        GameLoop& operator=(GameLoop&) = delete;
-        GameLoop& operator=(GameLoop&&) = delete;
+        MultiThreadGameLoop(MultiThreadGameLoop&) = delete;
+        MultiThreadGameLoop(MultiThreadGameLoop&&) = delete;
+        MultiThreadGameLoop& operator=(MultiThreadGameLoop&) = delete;
+        MultiThreadGameLoop& operator=(MultiThreadGameLoop&&) = delete;
 
         /**
          * \brief Changes the frequency at which update calls are fired.
@@ -48,8 +49,8 @@ namespace engine::gameloop {
 
      private:
         static constexpr int defaultUpdateFrequency = 25;
-        std::function<void(GameLoop&)> update;
-        std::function<void(GameLoop&, double)> render;
+        std::function<void(MultiThreadGameLoop&)> update;
+        std::function<void(MultiThreadGameLoop&, double)> render;
         int updatePeriod;
 
         std::thread updateThread;

@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <X11/Xlib.h>
 #include "engine/entity-system/include.hpp"
-#include "engine/game-loop/include.hpp"
+#include "engine/game-loop/MultiThreadGameLoop.hpp"
 #include "../GameLogic.hpp"
 #include "../Renderer.hpp"
 
 int mainGameLoop(int, char**) {
-    using engine::gameloop::GameLoop;
+    using GameLoop = engine::gameloop::MultiThreadGameLoop;
     XInitThreads();
     engine::entitysystem::ComponentManager componentManager;
     engine::resourcesystem::ResourceStorage resourceStorage;

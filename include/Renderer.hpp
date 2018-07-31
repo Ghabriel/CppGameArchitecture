@@ -4,14 +4,14 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 #include "engine/entity-system/include.hpp"
-#include "engine/game-loop/include.hpp"
+#include "engine/game-loop/MultiThreadGameLoop.hpp"
 #include "engine/resource-system/ResourceStorage.hpp"
 #include "engine/utils/timing/print-fps.hpp"
 #include "sfml-renderer-system.hpp"
 
 class Renderer {
     using ComponentManager = engine::entitysystem::ComponentManager;
-    using GameLoop = engine::gameloop::GameLoop;
+    using GameLoop = engine::gameloop::MultiThreadGameLoop;
     using ResourceStorage = engine::resourcesystem::ResourceStorage;
   public:
     Renderer(ComponentManager& manager, ResourceStorage& storage)
