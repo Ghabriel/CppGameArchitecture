@@ -4,7 +4,7 @@
 #include <cassert>
 #include <iostream>
 #include <vector>
-#include "LuaWrapper.hpp"
+#include "detail/LuaWrapper.hpp"
 
 namespace engine::scriptingsystem {
     /**
@@ -36,7 +36,7 @@ namespace engine::scriptingsystem {
         void registerNative(const std::string& luaFunctionName, Functor fn);
 
      private:
-        LuaWrapper luaState;
+        __detail::LuaWrapper luaState;
 
         size_t pushVariableValue(const std::string& variableName);
         void pushGlobalOrField(const std::string& value, size_t level);

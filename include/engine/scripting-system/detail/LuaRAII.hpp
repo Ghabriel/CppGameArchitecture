@@ -9,7 +9,7 @@ extern "C" {
     #include <lualib.h>
 }
 
-namespace engine::scriptingsystem {
+namespace engine::scriptingsystem::__detail {
     class LuaRAII {
      public:
         LuaRAII(const std::string& filename);

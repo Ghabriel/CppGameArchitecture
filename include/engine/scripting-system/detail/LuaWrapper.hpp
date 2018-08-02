@@ -4,10 +4,9 @@
 #include <cassert>
 #include <functional>
 #include "LuaRAII.hpp"
-#include "../utils/debug/xtrace.hpp"
 
-namespace engine::scriptingsystem {
-    namespace __detail {
+namespace engine::scriptingsystem::__detail {
+    namespace generic {
         template<typename T>
         T get(lua_State* L);
 
@@ -103,7 +102,7 @@ namespace engine::scriptingsystem {
             static int luaWrapper(lua_State* rawState) {
                 void* voidFn = lua_touserdata(localL.get(), lua_upvalueindex(1));
                 auto retrievedFn = reinterpret_cast<CFunction<Ret, Args...>>(voidFn);
-                retrievedFn(__detail::get<std::decay_t<Args>>(rawState)...);
+                retrievedFn(generic::get<std::decay_t<Args>>(rawState)...);
 
                 if constexpr (std::is_same_v<Ret, void>) {
                     return 0;
@@ -136,7 +135,7 @@ namespace engine::scriptingsystem {
 
     template<typename T>
     inline T LuaWrapper::get() const {
-        return __detail::get<T>(L.get());
+        return generic::get<T>(L.get());
     }
 }
 
